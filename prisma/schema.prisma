@@ -1,0 +1,141 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String    @unique
+  phone     BigInt    @unique
+  address   String
+  city      String
+  state     String
+  country   String
+  pincode   BigInt
+  password  String
+  token     String
+  isActive  Boolean
+  cart      Cart[]
+  billing   Billing[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Review    Review[]
+  Rating    Rating[]
+}
+
+model Product {
+  id                       String                 @id @default(cuid())
+  sku                      String
+  name                     String
+  description              String
+  retailPrice              Int
+  salePrice                Int
+  image                    String[]
+  brand                    String
+  specification            Json
+  categories               CategoriesOnProducts[]
+  carts                    ProductsInCarts[]
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+  Review                   Review[]
+  Rating                   Rating[]
+  relatedProducts          Product[]              @relation("relatedProducts")
+  relatedProductsOfProduct Product[]              @relation("relatedProducts")
+}
+
+model Category {
+  id          String                 @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  products    CategoriesOnProducts[]
+}
+
+model Cart {
+  id        String            @id @default(cuid())
+  user      User              @relation(fields: [userId], references: [id])
+  userId    String
+  products  ProductsInCarts[]
+  billing   Billing           @relation(fields: [billingId], references: [id])
+  billingId String
+  status    CartStatus        @default(PENDING)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model CategoriesOnProducts {
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+  createdAt  DateTime @default(now())
+
+  @@id([productId, categoryId])
+}
+
+model ProductsInCarts {
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  cartId    String
+  createdAt DateTime @default(now())
+
+  @@id([productId, cartId])
+}
+
+model Billing {
+  id        String   @id @default(cuid())
+  address   String
+  city      String
+  state     String
+  country   String
+  pincode   String
+  phone     String
+  email     String
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  cart      Cart[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  review    String
+  Rating    Rating[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Rating {
+  id        String   @id @default(cuid())
+  rating    Int
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  review    Review   @relation(fields: [reviewId], references: [id])
+  reviewId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum CartStatus {
+  PENDING
+  PROCESSED
+  ABANDONED
+}
