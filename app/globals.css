@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -34,6 +37,8 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+
+    --success: #2a8703;
   }
 
   .dark {
@@ -74,4 +79,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.btn-default {
+  @apply space-x-1 rounded-full border-1 border-black bg-white font-semibold hover:bg-white hover:ring-1 hover:ring-black;
 }

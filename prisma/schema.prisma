@@ -50,6 +50,8 @@ model Product {
   Rating                   Rating[]
   relatedProducts          Product[]              @relation("relatedProducts")
   relatedProductsOfProduct Product[]              @relation("relatedProducts")
+
+  @@unique([sku])
 }
 
 model Category {
@@ -80,7 +82,7 @@ model CategoriesOnProducts {
   categoryId String
   createdAt  DateTime @default(now())
 
-  @@id([productId, categoryId])
+  @@unique([productId, categoryId])
 }
 
 model ProductsInCarts {

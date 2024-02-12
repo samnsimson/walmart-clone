@@ -8,6 +8,11 @@ const nextConfig = {
         hostname: "i5.walmartimages.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        pathname: "/**",
+      },
     ],
   },
 };
