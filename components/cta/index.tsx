@@ -8,7 +8,7 @@ interface CtaProps extends HTMLAttributes<HTMLDivElement> {
 
 export const Cta: FC<CtaProps> = ({ ...props }) => {
   return (
-    <div {...props} className="p-6">
+    <div {...props}>
       <div className="flex items-center justify-center space-x-5 rounded border-1 bg-white p-6 shadow-lg">
         <Image
           src="https://i5.walmartimages.com/dfw/4ff9c6c9-8d78/k2-_7adee527-6076-4277-bef0-982ffd3e9fa3.v1.png?odnHeight=48&odnWidth=61&odnBg=&odnDynImageQuality=70"

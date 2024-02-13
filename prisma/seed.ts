@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { customAlphabet } from "nanoid";
+import { customAlphabet, nanoid } from "nanoid";
 import { faker } from "@faker-js/faker";
 import { randProduct, randProductCategory, randProductDescription, randUser } from "@ngneat/falso";
 
@@ -13,6 +13,7 @@ const generateProducts = (count: number) => {
     const salePrice = parseInt(faker.commerce.price({ min: retailPrice - 20, max: retailPrice - 1, dec: 0 }));
     return {
       sku: sku(),
+      slug: faker.helpers.slugify(`${product.title}-${nanoid(6)}`),
       name: product.title,
       description: faker.commerce.productDescription(),
       retailPrice,
@@ -65,21 +66,23 @@ const setupRelations = async () => {
 
 const main = async () => {
   try {
-    if (process.env["APP_ENV"] !== "production") {
-      await prisma.product.deleteMany();
-      const products = generateProducts(100);
-      await prisma.product.createMany({ data: products });
+    // if (process.env["APP_ENV"] !== "production") {
+    await prisma.categoriesOnProducts.deleteMany();
 
-      await prisma.category.deleteMany();
-      const categories = generateCategories(25);
-      await prisma.category.createMany({ data: categories });
+    await prisma.product.deleteMany();
+    const products = generateProducts(100);
+    await prisma.product.createMany({ data: products });
 
-      await prisma.user.deleteMany();
-      const users = generateUsers(20);
-      await prisma.user.createMany({ data: users });
+    await prisma.category.deleteMany();
+    const categories = generateCategories(25);
+    await prisma.category.createMany({ data: categories });
 
-      await setupRelations();
-    }
+    await prisma.user.deleteMany();
+    const users = generateUsers(20);
+    await prisma.user.createMany({ data: users });
+
+    await setupRelations();
+    // }
   } catch (error) {
     console.log("🚀 ~ main ~ error:", error);
     process.exit(1);
