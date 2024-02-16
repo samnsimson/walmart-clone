@@ -7,7 +7,7 @@ import { HeartIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 
 interface BaseProductCardProps {
-  image: string[];
+  image: string;
   title: string;
   slug: string;
   price: {
@@ -32,7 +32,7 @@ export const ProductCard: FC<ProductCardProps> = ({ title, image, slug, price: {
     <Card {...props} className="overflow-hidden border-0 p-1 shadow-none">
       <CardHeader className="relative overflow-hidden rounded-lg p-0">
         <AspectRatio ratio={1 / 1}>
-          <Image alt={title} fill src={image[0]} />
+          <Image alt={title} fill src={image} sizes="(max-width: 768px) 100vw, 33vw" />
         </AspectRatio>
         <HeartIcon
           className="absolute right-1 top-1 m-0 cursor-pointer rounded-full bg-white p-1 shadow"

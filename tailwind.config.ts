@@ -75,6 +75,9 @@ const config = {
       borderWidth: {
         "1": "1px",
       },
+      flexBasis: {
+        "1/11": "9.1%",
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
