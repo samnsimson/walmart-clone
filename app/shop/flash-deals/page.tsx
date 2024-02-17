@@ -3,11 +3,16 @@ import { ProductCarousel } from "@/components/productCarousel";
 import productService from "@/service/product.service";
 import { FC, HTMLAttributes } from "react";
 
-interface FlashDealsPageProps extends HTMLAttributes<HTMLDivElement> {
-  compact: boolean;
+// interface FlashDealsPageProps extends HTMLAttributes<HTMLDivElement> {
+//   compact: boolean;
+// }
+
+interface IPageProps {
+  params: { compact: boolean };
+  searchParams: string | string[] | undefined;
 }
 
-const FlashDealsPage: FC<FlashDealsPageProps> = async ({ compact = false, ...props }) => {
+const FlashDealsPage: FC<IPageProps> = async ({ params, ...props }) => {
   const products = await productService.getAllProducts();
   const pdts = products.map(({ retailPrice, salePrice, image, slug, ...pdt }) => ({
     ...pdt,

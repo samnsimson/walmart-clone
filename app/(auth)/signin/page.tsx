@@ -1,11 +1,11 @@
 import { NextPage } from "next";
-import { FC, HTMLAttributes } from "react";
 
-interface SignInProps extends HTMLAttributes<HTMLDivElement> {
-  [x: string]: any;
+interface IPageProps {
+  params: { [x: string]: string };
+  searchParams: string | string[] | undefined;
 }
 
-const SignIn: NextPage<SignInProps> = ({ ...props }) => {
+const SignIn: NextPage<IPageProps> = ({ ...props }) => {
   return <div {...props}>SignIn</div>;
 };
 

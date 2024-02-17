@@ -1,10 +1,11 @@
-import { FC, HTMLAttributes } from "react";
+import { FC } from "react";
 
-interface SignUpProps extends HTMLAttributes<HTMLDivElement> {
-  [x: string]: any;
+interface IPageProps {
+  params: { [x: string]: string };
+  searchParams: string | string[] | undefined;
 }
 
-const SignUp: FC<SignUpProps> = ({ ...props }) => {
+const SignUp: FC<IPageProps> = ({ ...props }) => {
   return <div {...props}>SignUp</div>;
 };
 
