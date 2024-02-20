@@ -78,6 +78,10 @@ const config = {
       flexBasis: {
         "1/11": "9.1%",
       },
+      backgroundImage: {
+        "category-ad-image":
+          "url('https://i5.walmartimages.com/dfw/4ff9c6c9-8e3a/k2-_417f2184-f7fb-4ce0-91b8-89b101436455.v1.jpg?odnHeight=470&odnWidth=1232&odnBg=&odnDynImageQuality=70')",
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],

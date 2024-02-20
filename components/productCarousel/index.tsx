@@ -10,7 +10,7 @@ interface ProductCarouselProps extends HTMLAttributes<HTMLDivElement> {
   sectionDescription?: string | null;
   sectionLink?: string | null;
   products: Product[];
-  columns?: number;
+  columns?: 3 | 4 | 6;
 }
 
 interface Product {
@@ -38,7 +38,7 @@ export const ProductCarousel: FC<ProductCarouselProps> = ({
       <Carousel opts={{ align: "start", slidesToScroll: 3 }}>
         <CarouselContent>
           {products.map((product, key) => (
-            <CarouselItem key={key} className={cn({ "basis-1/6": columns === 6, "basis-1/3": columns === 3 })}>
+            <CarouselItem key={key} className={cn({ "basis-1/6": columns === 6, "basis-1/3": columns === 3, "basis-1/4": columns === 4 })}>
               <ProductCard
                 productId={product.id}
                 image={product.image}

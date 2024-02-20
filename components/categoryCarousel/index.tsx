@@ -10,9 +10,10 @@ interface CategoryCarouselProps extends HTMLAttributes<HTMLDivElement> {
   sectionTitle?: string;
   sectionDescription?: string;
   sectionLink?: string;
+  columns?: 6 | 11 | 12;
 }
 
-export const CategoryCarousel: FC<CategoryCarouselProps> = async ({ sectionTitle, sectionDescription, sectionLink, className, ...props }) => {
+export const CategoryCarousel: FC<CategoryCarouselProps> = async ({ sectionTitle, sectionDescription, sectionLink, className, columns = 11, ...props }) => {
   const categories = await categoryService.getCategories();
   return (
     <div {...props} className={cn("space-y-6", className)}>
@@ -20,7 +21,7 @@ export const CategoryCarousel: FC<CategoryCarouselProps> = async ({ sectionTitle
       <Carousel opts={{ align: "start", slidesToScroll: 6 }}>
         <CarouselContent>
           {categories.map((category, key) => (
-            <CarouselItem key={key} className={cn("basis-1/11")}>
+            <CarouselItem key={key} className={cn({ "basis-1/11": columns === 11, "basis-1/6": columns === 6 })}>
               <Link href={`/shop/categories/${category.id}`} passHref>
                 <div className="flex flex-col items-center justify-center space-y-4">
                   <Image

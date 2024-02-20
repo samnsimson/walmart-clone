@@ -6,6 +6,10 @@ class ProductService extends DatabaseClient {
     return await this.db.product.findMany();
   };
 
+  public getProductsOfCategory = async (id: string) => {
+    return await this.db.product.findMany({ where: { categories: { some: { categoryId: id } } } });
+  };
+
   public transformProductListForCarousel(products: Product[] = []) {
     return products.map(({ retailPrice, salePrice, image, slug, ...pdt }) => ({
       ...pdt,
