@@ -40,6 +40,7 @@ export const ProductCarousel: FC<ProductCarouselProps> = ({
           {products.map((product, key) => (
             <CarouselItem key={key} className={cn({ "basis-1/6": columns === 6, "basis-1/3": columns === 3 })}>
               <ProductCard
+                productId={product.id}
                 image={product.image}
                 title={`${product.name} - ${product.description}`}
                 price={{ sale: product.price.sale, retail: product.price.retail }}

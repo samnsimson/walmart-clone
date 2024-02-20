@@ -30,7 +30,8 @@
     "slugify": "^1.6.6",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zustand": "^4.5.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
