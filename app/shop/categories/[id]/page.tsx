@@ -6,19 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { NextPageProps } from "@/lib/types";
-import categoryService from "@/service/category.service";
 import productService from "@/service/product.service";
 import { NextPage } from "next";
 import Image from "next/image";
 
-export async function generateStaticParams() {
-  const categories = await categoryService.getCategories();
-  return categories.map(({ id }) => ({ id }));
-}
+const SingleCategoryPage: NextPage<NextPageProps> = async ({ params }) => {
+  const products = await productService.getAllProducts({ category: params.id });
 
-const SingleCategoryPage: NextPage<NextPageProps> = async ({ params, searchParams }) => {
-  const category = await categoryService.getSingleCategory(params.id);
-  const products = await productService.getProductsOfCategory(params.id);
   return (
     <div>
       <SectionTitle title="Shop the look" />
@@ -40,7 +34,7 @@ const SingleCategoryPage: NextPage<NextPageProps> = async ({ params, searchParam
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="bg-category-ad-image grid h-[363px] grid-cols-3 gap-6 bg-cover bg-no-repeat py-0">
+            <CardContent className="grid h-[363px] grid-cols-3 gap-6 bg-category-ad-image bg-cover bg-no-repeat py-0">
               <div className="col-span-1 space-y-3 py-4">
                 <div>
                   <p>Now trending</p>

@@ -7,3 +7,7 @@ export interface Cart {
   id: string;
   quantity: number;
 }
+
+export interface Favourites {
+  id: string;
+}

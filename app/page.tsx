@@ -45,13 +45,12 @@ export default async function Home() {
           products={pdts.sort(() => Math.random() - 0.7)}
           columns={3}
         />
-        <div className="relative py-6">
+        <div className="relative overflow-hidden rounded py-6">
           <Image
             src="https://i5.walmartimages.com/dfw/4ff9c6c9-6a64/k2-_8d2951a5-30b4-420f-921a-665085bf27f4.v1.jpg"
             alt="ad"
-            objectFit="cover"
             fill
-            className="-z-10 w-full rounded-lg object-contain"
+            className="-z-10 w-full rounded-lg object-cover"
           />
           <div className="prose-lg z-20 px-6">
             <h4 className="text-2xl">Glidden&apos;s color of the year</h4>

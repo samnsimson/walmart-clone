@@ -2,9 +2,9 @@ import { FC } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import Image from "next/image";
 import { AspectRatio } from "../ui/aspect-ratio";
-import { HeartIcon } from "lucide-react";
 import Link from "next/link";
 import AddToCartButton from "../addToCardButton";
+import { FavouritesButton } from "../favouritesButton";
 
 interface BaseProductCardProps {
   productId: string;
@@ -35,13 +35,7 @@ export const ProductCard: FC<ProductCardProps> = ({ productId, title, image, slu
         <AspectRatio ratio={1 / 1}>
           <Image alt={title} fill src={image} sizes="(max-width: 768px) 100vw, 33vw" />
         </AspectRatio>
-        <HeartIcon
-          className="absolute right-1 top-1 m-0 cursor-pointer rounded-full bg-white p-1 shadow"
-          strokeWidth={1}
-          color="#000"
-          size={32}
-          style={{ marginTop: 0 }}
-        />
+        <FavouritesButton productId={productId} />
       </CardHeader>
       <Link href={{ pathname: `/shop/product/${slug}` }}>
         <CardContent className="prose-base px-0 py-4">
