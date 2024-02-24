@@ -24,13 +24,7 @@ export const CategoryCarousel: FC<CategoryCarouselProps> = async ({ sectionTitle
             <CarouselItem key={key} className={cn({ "basis-1/11": columns === 11, "basis-1/6": columns === 6 })}>
               <Link href={`/shop/categories/${category.id}`} passHref>
                 <div className="flex flex-col items-center justify-center space-y-4">
-                  <Image
-                    src={`https://picsum.photos/id/${key++ * Math.floor(Math.random() * (9 - 1 + 1)) + 1}/120`}
-                    alt="category image"
-                    width={120}
-                    height={120}
-                    className="rounded-full"
-                  />
+                  <Image src={`https://picsum.photos/seed/picsum/120/120`} alt="category image" width={120} height={120} className="rounded-full" />
                   <p className="line-clamp-1 text-sm">{category.name}</p>
                 </div>
               </Link>

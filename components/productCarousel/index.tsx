@@ -1,9 +1,10 @@
-import Link from "next/link";
 import { FC, HTMLAttributes } from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { ProductCard } from "../productCard";
 import { cn } from "@/lib/utils";
 import { SectionHeaders } from "../sectionHeader";
+import { Product } from "@prisma/client";
+import productService from "@/service/product.service";
 
 interface ProductCarouselProps extends HTMLAttributes<HTMLDivElement> {
   sectionTitle?: string | null;
@@ -11,17 +12,6 @@ interface ProductCarouselProps extends HTMLAttributes<HTMLDivElement> {
   sectionLink?: string | null;
   products: Product[];
   columns?: 3 | 4 | 6;
-}
-
-interface Product {
-  id: string;
-  sku: string;
-  slug: string;
-  name: string;
-  description?: string;
-  image: string;
-  format: "compact" | "detailed";
-  price: { sale: number; retail: number };
 }
 
 export const ProductCarousel: FC<ProductCarouselProps> = ({
@@ -32,12 +22,13 @@ export const ProductCarousel: FC<ProductCarouselProps> = ({
   products = [],
   ...props
 }) => {
+  const productIterator = productService.transformProductListForCarousel(products);
   return (
     <div {...props} className="flex flex-col space-y-6">
       <SectionHeaders {...{ sectionTitle, sectionDescription, sectionLink }} />
       <Carousel opts={{ align: "start", slidesToScroll: 3 }}>
         <CarouselContent>
-          {products.map((product, key) => (
+          {productIterator.map((product, key) => (
             <CarouselItem key={key} className={cn({ "basis-1/6": columns === 6, "basis-1/3": columns === 3, "basis-1/4": columns === 4 })}>
               <ProductCard
                 productId={product.id}

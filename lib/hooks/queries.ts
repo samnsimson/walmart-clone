@@ -7,5 +7,5 @@ interface Props {
 }
 
 export const useFetchProducts = (props: Props) => {
-  return useQuery({ queryKey: ["product", props], queryFn: () => axios.get(`/api/products?category=${props.id}`) });
+  return useQuery({ queryKey: ["product", props], queryFn: () => axios.get(`/api/products?category=${props.id}`), initialData: props });
 };

@@ -16,7 +16,7 @@ const SingleCategoryPage: NextPage<NextPageProps> = async ({ params }) => {
   return (
     <div>
       <SectionTitle title="Shop the look" />
-      <ProductCarousel products={productService.transformProductListForCarousel(products)} />
+      <ProductCarousel products={products} />
       <Separator className="my-6" />
       <div className="grid grid-cols-4 gap-6">
         <CatgegorySideBar className="col-span-1" title="Categories" />
@@ -30,7 +30,7 @@ const SingleCategoryPage: NextPage<NextPageProps> = async ({ params }) => {
                 height={691}
               />
               <SectionTitle title="Perk up your bedroom" description="A few new pieces will have you primed to seize the day." size="sm" />
-              <ProductCarousel products={productService.transformProductListForCarousel(products)} columns={4} />
+              <ProductCarousel products={products} columns={4} />
             </CardContent>
           </Card>
           <Card>
