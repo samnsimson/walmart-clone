@@ -10,4 +10,6 @@ export const useFetchProducts = (props: Props) => {
   return useQuery({ queryKey: ["product", props], queryFn: () => axios.get(`/api/products?category=${props.id}`), initialData: props });
 };
 
-export const useFetchCategories = (props: Props) => {};
+export const useFetchCategories = (props: Props) => {
+  console.log(props);
+};
