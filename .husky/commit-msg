@@ -16,22 +16,15 @@ if ! [[ $message =~ $requiredPattern ]]; then
     echo "[EXAMPLE]   : US123456: This is a sample commit message"
     echo "-------------------------------------------------------"
     echo "Your commit message was:"
-    echo $message
+    echo "[̣❌] $message"
     echo "-------------------------------------------------------"
-    echo "Please provide a valid commit message:"
-    
-    # Prompt for ticket number
-    read -p "Enter ticket number (e.g., US123456): " ticketNumber
-    
-    # Prompt for subject
-    read -p "Enter subject: " subject
-    
-    # Form the commit message
+    echo "Let's format the commit message"
+    read -p "[❕] Enter ticket number (e.g., US123456): " ticketNumber
+    read -p "[❕] Enter commit message: " $message
     commitMessage="$ticketNumber: $subject"
-    
     echo "-------------------------------------------------------"
     echo "Your new commit message is:"
-    echo $commitMessage
+    echo "[✅] $commitMessage"
     echo "-------------------------------------------------------"
     
     # Prompt for confirmation
