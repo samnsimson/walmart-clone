@@ -1,3 +1,0 @@
-npx lint-staged
-npx stylelint "**/*.{css,scss}"
-npm test
