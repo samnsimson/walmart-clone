@@ -22,7 +22,8 @@ else
     echo "[̣❌] $message"
     echo "-------------------------------------------------------"
     read -p "[❕] Enter ticket number (e.g., US123456): " ticketNumber
-    commitMessage="$ticketNumber: $message"
+    # commitMessage="$ticketNumber: $message"
+    commitMessage="$message"
     echo "-------------------------------------------------------"
     echo "Your new commit message is:"
     echo "[✅] $commitMessage"
