@@ -1,4 +1,6 @@
 {
   "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --ignore-unknown --write"],
-  "*.md": "prettier --list-different"
+  "*.md": "prettier --list-different",
+  "*.css": "stylelint",
+  "*.scss": "stylelint --syntax=scss"
 }
