@@ -1,0 +1,44 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+message="$(cat $1)"
+requiredPattern="/^US[0-9]+:\s+([a-z0-9]+( [a-z0-9]+)+)$/"
+
+if ! [[ $message =~ $requiredPattern ]]; then
+
+    if [ -t 1 ]; then
+    exec < /dev/tty
+    fi
+    echo "-------------------------------------------------------"
+    echo "[🚨] Invalid commit message format! 😕"
+    echo "-------------------------------------------------------"
+    echo "[FORMAT]    : <ticket number>: <what was done>"
+    echo "[EXAMPLE]   : US123456: This is a sample commit message"
+    echo "-------------------------------------------------------"
+    echo "Your commit message was:"
+    echo $message
+    echo "-------------------------------------------------------"
+    echo "Please provide a valid commit message:"
+    
+    # Prompt for ticket number
+    read -p "Enter ticket number (e.g., US123456): " ticketNumber
+    
+    # Prompt for subject
+    read -p "Enter subject: " subject
+    
+    # Form the commit message
+    commitMessage="$ticketNumber: $subject"
+    
+    echo "-------------------------------------------------------"
+    echo "Your new commit message is:"
+    echo $commitMessage
+    echo "-------------------------------------------------------"
+    
+    # Prompt for confirmation
+    read -p "Press 'Enter' to commit or 'Ctrl+C' to cancel"
+    
+    # Stage changes with the new message
+    echo "$commitMessage" > $1
+    
+    exit $?
+fi
