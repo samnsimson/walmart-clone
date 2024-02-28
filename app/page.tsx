@@ -12,7 +12,6 @@ import { CategoryLinksSection } from "@/components/categoryLinksSection";
 
 export default async function Home() {
   const products = await ProductService.getAllProducts();
-  const pdts = ProductService.transformProductListForCarousel(products);
   return (
     <main className="flex flex-col space-y-6 p-6">
       <section className="grid grid-flow-row-dense grid-cols-1 gap-6 lg:grid-cols-4">
@@ -34,7 +33,7 @@ export default async function Home() {
         sectionTitle="Flash Deals"
         sectionDescription="Upto 65% Off"
         sectionLink="/shop/flash-deals"
-        products={pdts.sort(() => Math.random() - 0.5)}
+        products={products.sort(() => Math.random() - 0.5)}
       />
       <Separator className="my-4 w-full" />
       <div className="grid grid-cols-2 gap-6">
@@ -42,7 +41,7 @@ export default async function Home() {
           sectionTitle="Refresh with a new hue"
           sectionDescription="Paints, brushes & more."
           sectionLink="/shop/popular-products"
-          products={pdts.sort(() => Math.random() - 0.7)}
+          products={products.sort(() => Math.random() - 0.7)}
           columns={3}
         />
         <div className="relative overflow-hidden rounded py-6">
@@ -66,7 +65,7 @@ export default async function Home() {
         sectionTitle="Popular in Kitchen & Dining"
         sectionDescription="Shop brands for your kitchen now"
         sectionLink="/shop/popular-products"
-        products={pdts.sort(() => Math.random() - 0.7)}
+        products={products.sort(() => Math.random() - 0.7)}
       />
       <Separator className="my-4 w-full" />
       <CategoryCarousel sectionTitle="Get it all right here" />
@@ -85,7 +84,7 @@ export default async function Home() {
         sectionTitle="Now in Season"
         sectionDescription="Home, Fashion & Beyond"
         sectionLink="/shop/popular-products"
-        products={pdts.sort(() => Math.random() - 0.7)}
+        products={products.sort(() => Math.random() - 0.7)}
       />
     </main>
   );
