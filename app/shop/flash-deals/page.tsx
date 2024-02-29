@@ -1,6 +1,6 @@
 import { ProductCard } from "@/components/productCard";
 import { ProductCarousel } from "@/components/productCarousel";
-import productService from "@/service/product.service";
+import productService from "@/actions/product.action";
 import { FC, HTMLAttributes } from "react";
 
 // interface FlashDealsPageProps extends HTMLAttributes<HTMLDivElement> {

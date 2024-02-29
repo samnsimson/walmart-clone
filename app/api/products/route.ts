@@ -1,4 +1,4 @@
-import productService from "@/service/product.service";
+import productService from "@/actions/product.action";
 import { type NextRequest } from "next/server";
 
 export const GET = async (request: NextRequest) => {

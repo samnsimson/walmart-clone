@@ -1,4 +1,4 @@
-import categoryService from "@/service/category.service";
+import categoryService from "@/actions/category.action";
 import { FC, HTMLAttributes } from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,7 @@ interface CategoryCarouselProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const CategoryCarousel: FC<CategoryCarouselProps> = async ({ sectionTitle, sectionDescription, sectionLink, className, columns = 11, ...props }) => {
-  const categories = await categoryService.getCategories();
+  const categories = await categoryService.getCategories({ where: { parentId: null } });
   return (
     <div {...props} className={cn("space-y-6", className)}>
       <SectionHeaders {...{ sectionTitle, sectionDescription, sectionLink }} />

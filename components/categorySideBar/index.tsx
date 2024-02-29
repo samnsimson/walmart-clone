@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import categoryService from "@/service/category.service";
+import categoryService from "@/actions/category.action";
 import { FC, HTMLAttributes } from "react";
 import SectionTitle from "../sectionTitle";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -11,7 +11,7 @@ interface CatgegorySideBarProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const CatgegorySideBar: FC<CatgegorySideBarProps> = async ({ className, title = "Categories", ...props }) => {
-  let categories = await categoryService.getCategories({ subCategories: true });
+  let categories = await categoryService.getCategories({ where: { parentId: null }, include: ["subCategories"] });
   categories = categories.filter((x, idx, self) => self.findIndex((t) => t["name"] === x["name"]) === idx);
   return (
     <div {...props}>

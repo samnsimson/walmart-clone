@@ -4,7 +4,7 @@ import { ProductCard } from "../productCard";
 import { cn } from "@/lib/utils";
 import { SectionHeaders } from "../sectionHeader";
 import { Product } from "@prisma/client";
-import productService from "@/service/product.service";
+import productService from "@/actions/product.action";
 
 interface ProductCarouselProps extends HTMLAttributes<HTMLDivElement> {
   sectionTitle?: string | null;

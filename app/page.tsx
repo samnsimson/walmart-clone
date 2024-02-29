@@ -2,7 +2,7 @@ import { CategoryLinks } from "@/components/categoryLinksMain";
 import { Cta } from "@/components/cta";
 import { categoryLinks } from "@/constants/links";
 import { cn } from "@/lib/utils";
-import ProductService from "@/service/product.service";
+import ProductService from "@/actions/product.action";
 import { ProductCarousel } from "@/components/productCarousel";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";

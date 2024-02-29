@@ -1,5 +1,6 @@
 import { DatabaseClient } from "@/config/databaseClient";
 import { Product } from "@prisma/client";
+import categoryAction from "./category.action";
 
 interface ProductFilters {
   id?: string;
@@ -8,12 +9,8 @@ interface ProductFilters {
   [x: string]: any;
 }
 
-class ProductService extends DatabaseClient {
+class ProductAction extends DatabaseClient {
   private readonly allowedFilters: Array<string> = ["id", "sku", "category"];
-
-  constructor() {
-    super();
-  }
 
   private productFilters = (filters: ProductFilters = {}) => {
     const filterKeys = Object.keys(filters).filter((item) => this.allowedFilters.includes(item));
@@ -29,10 +26,11 @@ class ProductService extends DatabaseClient {
     return await this.db.product.findMany({ where });
   };
 
-  public getAllProductsWithCategoryId = async (id: string) => {
-    const subCategories = await this.db.category.findMany({ where: { parentId: id }, select: { id: true } });
-    const product = await this.db.product.findMany({ where: { categories: { some: { categoryId: { in: subCategories.map(({ id }) => id) } } } } });
-    return product;
+  public getAllProductsUsingCategoryId = async (id: string) => {
+    const categoryWithProduct = await categoryAction.getSingleCategory({ where: { id }, include: ["products"] });
+    if (categoryWithProduct?.products?.length) return categoryWithProduct.products;
+    const subCategoriesWithProduct = await categoryAction.getCategories({ where: { parentId: id }, include: ["products"] });
+    return subCategoriesWithProduct.flatMap((subcat) => subcat.products);
   };
 
   public getProductsOfCategory = async (id: string) => {
@@ -50,5 +48,5 @@ class ProductService extends DatabaseClient {
   }
 }
 
-const productService = new ProductService();
-export default productService;
+const productAction = new ProductAction();
+export default productAction;

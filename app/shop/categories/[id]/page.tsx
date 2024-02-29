@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { NextPageProps } from "@/lib/types";
-import productService from "@/service/product.service";
+import productService from "@/actions/product.action";
 import { NextPage } from "next";
 import Image from "next/image";
 
 const SingleCategoryPage: NextPage<NextPageProps> = async ({ params }) => {
-  const products = await productService.getAllProductsWithCategoryId(params.id);
+  const products = await productService.getAllProductsUsingCategoryId(params.id);
 
   return (
     <div>

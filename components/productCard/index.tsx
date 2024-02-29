@@ -28,7 +28,7 @@ type DetailedFormat = {
 
 type ProductCardProps = BaseProductCardProps & (CompactFormat | DetailedFormat);
 
-export const ProductCard: FC<ProductCardProps> = ({ productId, title, image, slug, price: { retail, sale }, ...props }) => {
+export const ProductCard: FC<ProductCardProps> = ({ productId, title, image, price: { retail, sale }, ...props }) => {
   return (
     <Card {...props} className="overflow-hidden border-0 p-1 shadow-none">
       <CardHeader className="relative overflow-hidden rounded-lg p-0">
@@ -37,7 +37,7 @@ export const ProductCard: FC<ProductCardProps> = ({ productId, title, image, slu
         </AspectRatio>
         <FavouritesButton productId={productId} />
       </CardHeader>
-      <Link href={{ pathname: `/shop/product/${slug}` }}>
+      <Link href={{ pathname: `/shop/product/${productId}` }}>
         <CardContent className="prose-base px-0 py-4">
           <h3 className="m-0">
             {sale && <span className="font-bold text-success">Now ${sale}</span>}{" "}
