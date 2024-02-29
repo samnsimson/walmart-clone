@@ -29,6 +29,12 @@ class ProductService extends DatabaseClient {
     return await this.db.product.findMany({ where });
   };
 
+  public getAllProductsWithCategoryId = async (id: string) => {
+    const subCategories = await this.db.category.findMany({ where: { parentId: id }, select: { id: true } });
+    const product = await this.db.product.findMany({ where: { categories: { some: { categoryId: { in: subCategories.map(({ id }) => id) } } } } });
+    return product;
+  };
+
   public getProductsOfCategory = async (id: string) => {
     return await this.db.product.findMany({ where: { categories: { some: { categoryId: id } } } });
   };

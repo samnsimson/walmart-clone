@@ -11,7 +11,7 @@ import { NextPage } from "next";
 import Image from "next/image";
 
 const SingleCategoryPage: NextPage<NextPageProps> = async ({ params }) => {
-  const products = await productService.getAllProducts({ category: params.id });
+  const products = await productService.getAllProductsWithCategoryId(params.id);
 
   return (
     <div>

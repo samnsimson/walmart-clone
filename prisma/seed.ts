@@ -1,8 +1,8 @@
-import { PrismaClient, Product } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { customAlphabet, nanoid } from "nanoid";
 import { faker } from "@faker-js/faker";
 import { randProduct, randProductCategory, randProductDescription, randUser } from "@ngneat/falso";
-import { JsonValue } from "@prisma/client/runtime/library";
+import * as _ from "lodash";
 
 const prisma = new PrismaClient();
 
@@ -59,13 +59,11 @@ const generateReviews = (count: number) => {
 
 const setupProductCategoryRelations = async () => {
   const products = await prisma.product.findMany({ select: { id: true } });
-  const categories = await prisma.category.findMany();
+  const categories = await prisma.category.findMany({ where: { parentId: { not: null } }, select: { id: true } });
   const promises = [];
   for (const category of categories) {
-    const numElements = Math.floor(Math.random() * products.length) + 1;
-    const shuffledArr = products.sort(() => Math.random() - 0.5);
-    const pdts = shuffledArr.slice(0, numElements);
-    const record = prisma.category.update({ where: { id: category["id"] }, data: { products: { create: pdts.map((p) => ({ productId: p["id"] })) } } });
+    const pdts = _.sampleSize(_.shuffle(products), 20);
+    const record = prisma.categoriesOnProducts.createMany({ data: pdts.map((product) => ({ productId: product.id, categoryId: category.id })) });
     promises.push(record);
   }
   await Promise.all(promises);
@@ -77,17 +75,6 @@ const setupRelatedProducts = async () => {
   for (const product of products) {
     const relatedproducts = await prisma.product.findMany({ take: 12, skip: random(0, 100), distinct: ["id"] });
     const record = prisma.product.update({ where: { id: product.id }, data: { relatedProducts: { connect: relatedproducts.map((rp) => ({ id: rp.id })) } } });
-    promises.push(record);
-  }
-  await Promise.all(promises);
-};
-
-const setupSubCategories = async () => {
-  const categories = await prisma.category.findMany();
-  const promises = [];
-  for (const category of categories) {
-    const subCategories = generateCategories(6);
-    const record = prisma.category.update({ where: { id: category.id }, data: { subCategories: { create: subCategories.map((category) => category) } } });
     promises.push(record);
   }
   await Promise.all(promises);
@@ -106,23 +93,40 @@ const setupReviews = async () => {
   await Promise.all(promises);
 };
 
+const setupUsers = async () => {
+  const users = generateUsers(20);
+  await prisma.user.createMany({ data: users });
+};
+
+const setupProducts = async () => {
+  const products = generateProducts(100);
+  await prisma.product.createMany({ data: products });
+};
+
+const setupCategories = async () => {
+  const categories = generateCategories(25);
+  const promises = [];
+  for (const category of categories) {
+    const record = prisma.category.create({ data: { ...category, subCategories: { create: generateCategories(10) } }, include: { subCategories: true } });
+    promises.push(record);
+  }
+  await Promise.all(promises);
+};
+
 const main = async () => {
   try {
+    await prisma.review.deleteMany();
     await prisma.categoriesOnProducts.deleteMany();
     await prisma.product.deleteMany();
     await prisma.category.deleteMany();
     await prisma.user.deleteMany();
-    await prisma.review.deleteMany();
 
-    const products = generateProducts(100);
-    const categories = generateCategories(25);
-    const users = generateUsers(20);
-
-    await prisma.product.createMany({ data: products });
-    await prisma.category.createMany({ data: categories });
-    await prisma.user.createMany({ data: users });
-
-    await Promise.all([setupProductCategoryRelations(), setupRelatedProducts(), setupSubCategories(), setupReviews()]);
+    await setupUsers();
+    await setupProducts();
+    await setupCategories();
+    await setupProductCategoryRelations();
+    await setupRelatedProducts();
+    await setupReviews();
   } catch (error) {
     console.log("🚀 ~ main ~ error:", error);
     process.exit(1);
