@@ -34,9 +34,9 @@ model User {
 }
 
 model Product {
-  id                String                 @id @default(uuid())
+  id                String            @id @default(uuid())
   sku               String
-  slug              String?                @unique @db.Text()
+  slug              String?           @unique @db.Text()
   name              String
   description       String
   retailPrice       Int
@@ -44,28 +44,28 @@ model Product {
   image             String[]
   brand             String
   specification     Json?
-  categories        CategoriesOnProducts[]
+  categories        Category[]
   carts             ProductsInCarts[]
-  createdAt         DateTime               @default(now())
-  updatedAt         DateTime               @updatedAt
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
   review            Review[]
   rating            Rating[]
-  relatedProducts   Product[]              @relation("relatedProducts")
-  relatedToProducts Product[]              @relation("relatedProducts")
+  relatedProducts   Product[]         @relation("relatedProducts")
+  relatedToProducts Product[]         @relation("relatedProducts")
 
   @@unique([sku])
 }
 
 model Category {
-  id            String                 @id @default(uuid())
+  id            String     @id @default(uuid())
   name          String
   description   String?
-  subCategories Category[]             @relation("subCategory")
-  parent        Category?              @relation("subCategory", fields: [parentId], references: [id])
+  subCategories Category[] @relation("subCategory")
+  parent        Category?  @relation("subCategory", fields: [parentId], references: [id])
   parentId      String?
-  products      CategoriesOnProducts[]
-  createdAt     DateTime               @default(now())
-  updatedAt     DateTime               @updatedAt
+  products      Product[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model Cart {
@@ -80,15 +80,15 @@ model Cart {
   updatedAt DateTime          @updatedAt
 }
 
-model CategoriesOnProducts {
-  product    Product  @relation(fields: [productId], references: [id])
-  productId  String
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String
-  createdAt  DateTime @default(now())
+// model CategoriesOnProducts {
+//   product    Product  @relation(fields: [productId], references: [id])
+//   productId  String
+//   category   Category @relation(fields: [categoryId], references: [id])
+//   categoryId String
+//   createdAt  DateTime @default(now())
 
-  @@unique([productId, categoryId])
-}
+//   @@unique([productId, categoryId])
+// }
 
 model ProductsInCarts {
   product   Product  @relation(fields: [productId], references: [id])

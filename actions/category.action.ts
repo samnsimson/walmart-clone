@@ -1,13 +1,11 @@
 import { DatabaseClient } from "@/config/databaseClient";
 import { Prisma } from "@prisma/client";
 
-interface CategoryPropsWhereCond {
-  [key: string]: string | number | null;
-}
-
 interface GetCategoryProps {
-  where?: CategoryPropsWhereCond;
+  where?: { [key: string]: string | number | null };
   include?: Array<"subCategories" | "products">;
+  limit?: number;
+  order?: "ASC" | "DESC";
 }
 
 const categoryWithAssociations = Prisma.validator<Prisma.CategoryDefaultArgs>()({
@@ -31,9 +29,13 @@ class CategoryAction extends DatabaseClient {
     }, {});
   };
 
-  public getCategories = async ({ include, where }: GetCategoryProps = {}): Promise<Partial<CategoryWithAssociations>[]> => {
+  public getCategories = async ({ include, where, limit }: GetCategoryProps = {}): Promise<Partial<CategoryWithAssociations>[]> => {
     try {
-      return await this.db.category.findMany({ ...this.categoryConditions(where), ...this.categoryAssociations(include) });
+      return await this.db.category.findMany({
+        ...this.categoryConditions(where),
+        ...this.categoryAssociations(include),
+        ...(limit && { take: limit }),
+      });
     } catch (error) {
       console.log(error);
       throw new Error(error as any);

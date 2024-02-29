@@ -12,7 +12,6 @@ import Image from "next/image";
 
 const SingleCategoryPage: NextPage<NextPageProps> = async ({ params }) => {
   const products = await productService.getAllProductsUsingCategoryId(params.id);
-
   return (
     <div>
       <SectionTitle title="Shop the look" />

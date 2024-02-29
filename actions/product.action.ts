@@ -1,6 +1,7 @@
 import { DatabaseClient } from "@/config/databaseClient";
 import { Product } from "@prisma/client";
 import categoryAction from "./category.action";
+import fs from "fs";
 
 interface ProductFilters {
   id?: string;
@@ -26,15 +27,12 @@ class ProductAction extends DatabaseClient {
     return await this.db.product.findMany({ where });
   };
 
-  public getAllProductsUsingCategoryId = async (id: string) => {
+  public getAllProductsUsingCategoryId = async (id: string): Promise<Array<Product>> => {
     const categoryWithProduct = await categoryAction.getSingleCategory({ where: { id }, include: ["products"] });
     if (categoryWithProduct?.products?.length) return categoryWithProduct.products;
     const subCategoriesWithProduct = await categoryAction.getCategories({ where: { parentId: id }, include: ["products"] });
-    return subCategoriesWithProduct.flatMap((subcat) => subcat.products);
-  };
-
-  public getProductsOfCategory = async (id: string) => {
-    return await this.db.product.findMany({ where: { categories: { some: { categoryId: id } } } });
+    const productsArr = subCategoriesWithProduct.flatMap((subcategory) => subcategory.products);
+    return productsArr as Array<Product>;
   };
 
   public transformProductListForCarousel(products: Product[] = []) {

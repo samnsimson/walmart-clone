@@ -57,18 +57,6 @@ const generateReviews = (count: number) => {
   return [...Array(count)].map(() => ({ review: faker.lorem.paragraph({ min: 3, max: 5 }) }));
 };
 
-const setupProductCategoryRelations = async () => {
-  const products = await prisma.product.findMany({ select: { id: true } });
-  const categories = await prisma.category.findMany({ where: { parentId: { not: null } }, select: { id: true } });
-  const promises = [];
-  for (const category of categories) {
-    const pdts = _.sampleSize(_.shuffle(products), 20);
-    const record = prisma.categoriesOnProducts.createMany({ data: pdts.map((product) => ({ productId: product.id, categoryId: category.id })) });
-    promises.push(record);
-  }
-  await Promise.all(promises);
-};
-
 const setupRelatedProducts = async () => {
   const products = await prisma.product.findMany({ select: { id: true } });
   const promises = [];
@@ -98,33 +86,33 @@ const setupUsers = async () => {
   await prisma.user.createMany({ data: users });
 };
 
-const setupProducts = async () => {
-  const products = generateProducts(100);
-  await prisma.product.createMany({ data: products });
-};
-
-const setupCategories = async () => {
-  const categories = generateCategories(25);
-  const promises = [];
-  for (const category of categories) {
-    const record = prisma.category.create({ data: { ...category, subCategories: { create: generateCategories(10) } }, include: { subCategories: true } });
-    promises.push(record);
-  }
-  await Promise.all(promises);
+const setupCategoriesAndProducts = async () => {
+  await Promise.all(
+    generateCategories(25).map((category) => {
+      return prisma.category.create({
+        data: {
+          ...category,
+          subCategories: {
+            create: generateCategories(10).map((subcat) => {
+              return { ...subcat, products: { create: generateProducts(10) } };
+            }),
+          },
+        },
+        include: { subCategories: true, products: true },
+      });
+    }),
+  );
 };
 
 const main = async () => {
   try {
     await prisma.review.deleteMany();
-    await prisma.categoriesOnProducts.deleteMany();
     await prisma.product.deleteMany();
     await prisma.category.deleteMany();
     await prisma.user.deleteMany();
 
     await setupUsers();
-    await setupProducts();
-    await setupCategories();
-    await setupProductCategoryRelations();
+    await setupCategoriesAndProducts();
     await setupRelatedProducts();
     await setupReviews();
   } catch (error) {
