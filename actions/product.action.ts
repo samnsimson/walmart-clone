@@ -1,12 +1,15 @@
 import { DatabaseClient } from "@/config/databaseClient";
 import { Product } from "@prisma/client";
 import categoryAction from "./category.action";
-import fs from "fs";
+
+interface WhereCond {
+  [x: string]: any;
+}
 
 interface ProductFilters {
-  id?: string;
-  category?: string;
-  sku?: string;
+  where?: WhereCond;
+  include?: Array<string>;
+  limit?: number;
   [x: string]: any;
 }
 
@@ -22,10 +25,10 @@ class ProductAction extends DatabaseClient {
     }, {});
   };
 
-  public getAllProducts = async (filters: ProductFilters = {}) => {
-    const where = this.productFilters(filters);
-    return await this.db.product.findMany({ where });
-  };
+  public getSingleProduct = async (id: string) => await this.db.product.findFirst({ where: { id } });
+
+  public getAllProducts = async ({ where, include, limit = 24 }: ProductFilters = {}) =>
+    await this.db.product.findMany({ where: this.productFilters(where), take: limit });
 
   public getAllProductsUsingCategoryId = async (id: string): Promise<Array<Product>> => {
     const categoryWithProduct = await categoryAction.getSingleCategory({ where: { id }, include: ["products"] });

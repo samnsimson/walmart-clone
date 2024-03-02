@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={openSans.className}>
+      <body className={openSans.className} suppressHydrationWarning={true}>
         <QueryProvider>
           <Header />
           {children}

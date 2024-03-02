@@ -29,12 +29,12 @@ class CategoryAction extends DatabaseClient {
     }, {});
   };
 
-  public getCategories = async ({ include, where, limit }: GetCategoryProps = {}): Promise<Partial<CategoryWithAssociations>[]> => {
+  public getCategories = async ({ include, where, limit = 24 }: GetCategoryProps = {}): Promise<Partial<CategoryWithAssociations>[]> => {
     try {
       return await this.db.category.findMany({
         ...this.categoryConditions(where),
         ...this.categoryAssociations(include),
-        ...(limit && { take: limit }),
+        take: limit,
       });
     } catch (error) {
       console.log(error);
