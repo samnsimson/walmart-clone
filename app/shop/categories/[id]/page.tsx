@@ -9,9 +9,16 @@ import { NextPageProps } from "@/lib/types";
 import productService from "@/actions/product.action";
 import { NextPage } from "next";
 import Image from "next/image";
+import categoryAction from "@/actions/category.action";
 
-const SingleCategoryPage: NextPage<NextPageProps> = async ({ params }) => {
-  const products = await productService.getAllProductsUsingCategoryId(params.id);
+//function to generate the routes for all the products
+export async function generateStaticParams() {
+  const categories = await categoryAction.getCategories({ limit: -1 });
+  return categories.map(({ id }) => ({ id }));
+}
+
+const SingleCategoryPage: NextPage<NextPageProps> = async ({ params: { id } }) => {
+  const products = await productService.getAllProductsUsingCategoryId(id);
   return (
     <div>
       <SectionTitle title="Shop the look" />

@@ -183,6 +183,12 @@ const ProductDetails: FC<{ product: Product }> = ({ product }) => {
   );
 };
 
+//function to generate the routes for all the products
+export async function generateStaticParams() {
+  const products = await productAction.getAllProducts({ limit: -1 });
+  return products.map(({ id }) => ({ id }));
+}
+
 const SingleProductPage: NextPage<NextPageProps> = async ({ params: { id }, searchParams }) => {
   const product = await productAction.getSingleProduct({ id, include: ["relatedProducts", "relatedToProducts", "rating", "review", "brand"] });
 

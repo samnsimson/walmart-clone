@@ -34,7 +34,7 @@ class CategoryAction extends DatabaseClient {
       return await this.db.category.findMany({
         ...this.categoryConditions(where),
         ...this.categoryAssociations(include),
-        take: limit,
+        ...(limit !== -1 && { take: limit }),
       });
     } catch (error) {
       console.log(error);

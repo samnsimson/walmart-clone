@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { customAlphabet, nanoid } from "nanoid";
 import { faker } from "@faker-js/faker";
-import { randProduct, randProductCategory, randProductDescription, randUser } from "@ngneat/falso";
+import { randCompanyName, randProduct, randProductCategory, randProductDescription, randUser } from "@ngneat/falso";
 import * as _ from "lodash";
 
 const prisma = new PrismaClient();
@@ -22,7 +22,6 @@ const generateProducts = (count: number) => {
       retailPrice,
       salePrice,
       image: [...Array(4)].map(() => faker.image.urlPicsumPhotos()),
-      brand: faker.company.name(),
       specification: {
         quantity: faker.number.int({ min: 1, max: 1000 }),
         color: faker.color.rgb(),
@@ -58,17 +57,19 @@ const generateReviews = (count: number) => {
 };
 
 const setupRelatedProducts = async () => {
+  console.log("Seeding related products...");
   const products = await prisma.product.findMany({ select: { id: true } });
   const promises = [];
-  for (const product of products) {
-    const relatedproducts = await prisma.product.findMany({ take: 12, skip: random(0, 100), distinct: ["id"] });
-    const record = prisma.product.update({ where: { id: product.id }, data: { relatedProducts: { connect: relatedproducts.map((rp) => ({ id: rp.id })) } } });
+  for (const { id } of products) {
+    const rp = _.sampleSize(products, 12);
+    const record = prisma.product.update({ where: { id }, data: { relatedProducts: { connect: rp.map(({ id }) => ({ id })) } } });
     promises.push(record);
   }
   await Promise.all(promises);
 };
 
 const setupReviews = async () => {
+  console.log("Seeding reviews...");
   const products = await prisma.product.findMany({ select: { id: true } });
   const users = await prisma.user.findMany({ select: { id: true } });
   const promises = [];
@@ -82,11 +83,13 @@ const setupReviews = async () => {
 };
 
 const setupUsers = async () => {
+  console.log("Seeding users...");
   const users = generateUsers(20);
   await prisma.user.createMany({ data: users });
 };
 
 const setupCategoriesAndProducts = async () => {
+  console.log("Seeding categories and products...");
   await Promise.all(
     generateCategories(25).map((category) => {
       return prisma.category.create({
@@ -104,9 +107,26 @@ const setupCategoriesAndProducts = async () => {
   );
 };
 
+const setupBrand = async () => {
+  console.log("Seeding brands...");
+  const brands = randCompanyName({ length: 50 }).map((name) => ({ name }));
+  await prisma.brand.createMany({ data: brands });
+  const createdBrands = await prisma.brand.findMany({ select: { id: true } });
+  const products = await prisma.product.findMany({ select: { id: true } });
+  const promises = products.map((product) => {
+    const { id: brandId } = _.sample(createdBrands) ?? { id: "" };
+    return prisma.product.update({
+      where: { id: product.id },
+      data: { brand: { connect: { id: brandId } } },
+    });
+  });
+  await Promise.all(promises);
+};
+
 const main = async () => {
   try {
     await prisma.review.deleteMany();
+    await prisma.brand.deleteMany();
     await prisma.product.deleteMany();
     await prisma.category.deleteMany();
     await prisma.user.deleteMany();
@@ -114,6 +134,7 @@ const main = async () => {
     await setupUsers();
     await setupCategoriesAndProducts();
     await setupRelatedProducts();
+    await setupBrand();
     await setupReviews();
   } catch (error) {
     console.log("🚀 ~ main ~ error:", error);

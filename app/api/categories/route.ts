@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export default function GET(req: NextRequest) {
+export const GET = (req: NextRequest) => {
   return new NextResponse("Hello World!");
-}
+};

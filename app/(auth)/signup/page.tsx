@@ -1,12 +1,8 @@
-import { FC } from "react";
+import { NextPageProps } from "@/lib/types";
+import { NextPage } from "next";
 
-interface IPageProps {
-  params: { [x: string]: string };
-  searchParams: string | string[] | undefined;
-}
-
-const SignUp: FC<IPageProps> = ({ ...props }) => {
-  return <div {...props}>SignUp</div>;
+const SignUp: NextPage<NextPageProps> = ({}) => {
+  return <div>SignUp</div>;
 };
 
 export default SignUp;
