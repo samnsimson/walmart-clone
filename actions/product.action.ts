@@ -1,5 +1,5 @@
 import { DatabaseClient } from "@/config/databaseClient";
-import { Cart, Category, Prisma, Product, Rating, Review } from "@prisma/client";
+import { Brand, Cart, Category, Prisma, Product, Rating, Review } from "@prisma/client";
 import categoryAction from "./category.action";
 
 interface WhereCond {
@@ -20,7 +20,7 @@ interface SingleProductParams {
   include?: Array<ProductAssociations>;
 }
 
-type ProductWithAssociations = Product &
+export type ProductWithAssociations = Product &
   Partial<{
     relatedProducts: Array<Product>;
     relatedToProducts: Array<Product>;
@@ -28,6 +28,7 @@ type ProductWithAssociations = Product &
     rating: Array<Rating>;
     categories: Array<Category>;
     carts: Array<Cart>;
+    brand: Brand;
   }>;
 
 class ProductAction extends DatabaseClient {

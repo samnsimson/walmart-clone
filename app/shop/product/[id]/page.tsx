@@ -1,4 +1,4 @@
-import productAction from "@/actions/product.action";
+import productAction, { ProductWithAssociations } from "@/actions/product.action";
 import { ProductCarousel } from "@/components/productCarousel";
 import { ProductPageImage } from "@/components/productPageImage";
 import { SectionHeaders } from "@/components/sectionHeader";
@@ -86,12 +86,12 @@ const DeliveryInformation: FC = () => {
   );
 };
 
-const ProductMeta: FC<{ product: Product }> = ({ product }) => {
+const ProductMeta: FC<{ product: ProductWithAssociations }> = ({ product }) => {
   return (
     <div>
       <span className="text-sm">
         <Link href={"#"} className="text-gray-500  no-underline hover:text-black hover:underline">
-          {product.brand}
+          {product.brand?.name}
         </Link>
       </span>
       <h3 className="my-0">
@@ -184,7 +184,7 @@ const ProductDetails: FC<{ product: Product }> = ({ product }) => {
 };
 
 const SingleProductPage: NextPage<NextPageProps> = async ({ params: { id }, searchParams }) => {
-  const product = await productAction.getSingleProduct({ id, include: ["relatedProducts", "relatedToProducts", "rating", "review"] });
+  const product = await productAction.getSingleProduct({ id, include: ["relatedProducts", "relatedToProducts", "rating", "review", "brand"] });
 
   if (!product) return <></>;
 
