@@ -23,7 +23,7 @@ export const ProductCarousel: FC<ProductCarouselProps> = ({
   ...props
 }) => {
   const productIterator = productService.transformProductListForCarousel(products);
-  return (
+  return productIterator.length > 0 ? (
     <div {...props} className="flex flex-col space-y-6">
       <SectionHeaders {...{ sectionTitle, sectionDescription, sectionLink }} />
       <Carousel opts={{ align: "start", slidesToScroll: 3 }}>
@@ -45,5 +45,5 @@ export const ProductCarousel: FC<ProductCarouselProps> = ({
         <CarouselNext className="right-5 shadow-xl ring-1 ring-black" />
       </Carousel>
     </div>
-  );
+  ) : null;
 };

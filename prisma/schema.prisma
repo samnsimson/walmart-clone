@@ -29,29 +29,30 @@ model User {
   billing   Billing[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Review    Review[]
-  Rating    Rating[]
+  review    Review[]
+  rating    Rating[]
 }
 
 model Product {
-  id                String            @id @default(uuid())
+  id                String     @id @default(uuid())
   sku               String
-  slug              String?           @unique @db.Text()
+  slug              String?    @unique @db.Text()
   name              String
   description       String
   retailPrice       Int
   salePrice         Int
   image             String[]
-  brand             String
   specification     Json?
   categories        Category[]
-  carts             ProductsInCarts[]
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
   review            Review[]
   rating            Rating[]
-  relatedProducts   Product[]         @relation("relatedProducts")
-  relatedToProducts Product[]         @relation("relatedProducts")
+  relatedProducts   Product[]  @relation("relatedProducts")
+  relatedToProducts Product[]  @relation("relatedProducts")
+  brand             Brand?     @relation(fields: [brandId], references: [id])
+  brandId           String?
+  carts             Cart[]
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 
   @@unique([sku])
 }
@@ -69,35 +70,23 @@ model Category {
 }
 
 model Cart {
-  id        String            @id @default(uuid())
-  user      User              @relation(fields: [userId], references: [id])
+  id        String     @id @default(uuid())
+  user      User       @relation(fields: [userId], references: [id])
   userId    String
-  products  ProductsInCarts[]
-  billing   Billing           @relation(fields: [billingId], references: [id])
+  products  Product[]
+  billing   Billing    @relation(fields: [billingId], references: [id])
   billingId String
-  status    CartStatus        @default(PENDING)
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  status    CartStatus @default(PENDING)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
-// model CategoriesOnProducts {
-//   product    Product  @relation(fields: [productId], references: [id])
-//   productId  String
-//   category   Category @relation(fields: [categoryId], references: [id])
-//   categoryId String
-//   createdAt  DateTime @default(now())
-
-//   @@unique([productId, categoryId])
-// }
-
-model ProductsInCarts {
-  product   Product  @relation(fields: [productId], references: [id])
-  productId String
-  cart      Cart     @relation(fields: [cartId], references: [id])
-  cartId    String
-  createdAt DateTime @default(now())
-
-  @@id([productId, cartId])
+model Brand {
+  id        String    @id @default(uuid())
+  name      String
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Billing {

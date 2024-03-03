@@ -1,17 +1,34 @@
 import { DatabaseClient } from "@/config/databaseClient";
-import { Product } from "@prisma/client";
+import { Cart, Category, Prisma, Product, Rating, Review } from "@prisma/client";
 import categoryAction from "./category.action";
 
 interface WhereCond {
   [x: string]: any;
 }
 
+type ProductAssociations = "relatedProducts" | "relatedToProducts" | "categories" | "review" | "rating" | "brand";
+
 interface ProductFilters {
   where?: WhereCond;
-  include?: Array<string>;
+  include?: Array<ProductAssociations>;
   limit?: number;
   [x: string]: any;
 }
+
+interface SingleProductParams {
+  id: string;
+  include?: Array<ProductAssociations>;
+}
+
+type ProductWithAssociations = Product &
+  Partial<{
+    relatedProducts: Array<Product>;
+    relatedToProducts: Array<Product>;
+    review: Array<Review>;
+    rating: Array<Rating>;
+    categories: Array<Category>;
+    carts: Array<Cart>;
+  }>;
 
 class ProductAction extends DatabaseClient {
   private readonly allowedFilters: Array<string> = ["id", "sku", "category"];
@@ -25,10 +42,20 @@ class ProductAction extends DatabaseClient {
     }, {});
   };
 
-  public getSingleProduct = async (id: string) => await this.db.product.findFirst({ where: { id } });
+  private productAssociations = (include: SingleProductParams["include"] = []) => {
+    return include.reduce((accumulator: { [x: string]: any }, current) => {
+      accumulator["include"] = { ...accumulator.include, [current]: true };
+      return accumulator;
+    }, {});
+  };
 
-  public getAllProducts = async ({ where, include, limit = 24 }: ProductFilters = {}) =>
-    await this.db.product.findMany({ where: this.productFilters(where), take: limit });
+  public getSingleProduct = async ({ id, include }: SingleProductParams): Promise<ProductWithAssociations | null> => {
+    return await this.db.product.findFirst({ where: { id }, ...this.productAssociations(include) });
+  };
+
+  public getAllProducts = async ({ where, include, limit = 24 }: ProductFilters = {}): Promise<ProductWithAssociations[]> => {
+    return await this.db.product.findMany({ where: this.productFilters(where), take: limit });
+  };
 
   public getAllProductsUsingCategoryId = async (id: string): Promise<Array<Product>> => {
     const categoryWithProduct = await categoryAction.getSingleCategory({ where: { id }, include: ["products"] });

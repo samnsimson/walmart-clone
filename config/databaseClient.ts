@@ -1,7 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 
+declare global {
+  var prisma: PrismaClient;
+}
+
 export class DatabaseClient {
-  private static prisma: PrismaClient;
   protected db: PrismaClient;
 
   constructor() {
@@ -9,7 +12,7 @@ export class DatabaseClient {
   }
 
   private connection() {
-    if (!DatabaseClient["prisma"]) DatabaseClient["prisma"] = new PrismaClient();
-    return DatabaseClient["prisma"];
+    if (!global.prisma) global.prisma = new PrismaClient();
+    return global.prisma;
   }
 }
