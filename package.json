@@ -4,16 +4,18 @@
   "private": true,
   "scripts": {
     "test": "",
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "npm run create-typesense-collections && next dev",
+    "build": "npm run create-typesense-collections && next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "create-typesense-collections": "node ./scripts/create-typesense-collection.js"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@loancrate/prisma-schema-parser": "^2.0.0",
     "@ngneat/falso": "^7.1.1",
     "@prisma/client": "^5.9.1",
     "@radix-ui/react-accordion": "^1.1.2",
@@ -37,6 +39,7 @@
     "stylelint-config-standard-scss": "^13.0.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
+    "typesense": "^1.7.2",
     "zod": "^3.22.4",
     "zustand": "^4.5.1"
   },

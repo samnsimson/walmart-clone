@@ -38,23 +38,23 @@ services:
     networks:
       - walmart
 
-  # typesense:
-  #   container_name: walmart-typesense
-  #   image: typesense/typesense:0.21.0
-  #   entrypoint: sh -c "/opt/typesense-server --data-dir /data --api-key=TYPESENSE --enable-cors"
-  #   ports:
-  #     - "8108:8108"
-  #   depends_on:
-  #     - pgdb
-  #   volumes:
-  #     - typesense-data:/data
-  #   networks:
-  #     - walmart
-  #   restart: always
+  typesense:
+    container_name: typesense
+    image: typesense/typesense:0.26.0.rc59-arm64
+    command: "--data-dir /data --api-key=TYPESENSE --enable-cors"
+    ports:
+      - "8108:8108"
+    depends_on:
+      pgdb:
+        condition: service_healthy
+        restart: true
+    volumes:
+      - typesense_data:/data
+    networks:
+      - walmart
 
 volumes:
-  # typesense-data:
-  #   driver: local
+  typesense_data:
   postgres_data:
 
 networks:
