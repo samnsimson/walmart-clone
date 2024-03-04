@@ -3,10 +3,14 @@ const { Client } = require("typesense");
 const fs = require("fs");
 const { PrismaClient } = require("@prisma/client");
 
+const { TYPESENSE_HOST, TYPESENSE_PORT, TYPESENSE_API_KEY } = process.env;
+
+console.log("TYPESENSE_HOST, TYPESENSE_PORT, TYPESENSE_API_KEY", TYPESENSE_HOST, TYPESENSE_PORT, TYPESENSE_API_KEY);
+
 const tsClient = new Client({
-  nodes: [{ host: "localhost", port: 8108, protocol: "http" }],
+  nodes: [{ host: TYPESENSE_HOST, port: TYPESENSE_PORT, protocol: "http" }],
   apiKey: "TYPESENSE",
-  connectionTimeoutSeconds: 2,
+  connectionTimeoutSeconds: 10,
 });
 
 const prismaClient = new PrismaClient();
@@ -49,12 +53,6 @@ const syncData = async () => {
   console.log("Sync data to collection...");
   const products = await prismaClient.product.findMany();
   await tsClient.collections("Product").documents().import(products, { action: "create" });
-  // const typesenseCollections = await tsClient.collections().retrieve();
-  // const collections = typesenseCollections.map((collection) => collection.name);
-  // const dataSetPromises = collections.map((collection) => prismaClient[collection].findMany());
-  // const dataSet = await Promise.all(dataSetPromises);
-  // const tsPromises = collections.map((collection, index) => tsClient.collections(collection).documents().import(dataSet[index], { action: "create" }));
-  // await Promise.all(tsPromises);
 };
 
 (async () => {

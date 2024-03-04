@@ -13,6 +13,9 @@ services:
       - 3000:3000
     environment:
       - DATABASE_URL=postgresql://postgres:W3lcome!@pgdb:5432/ecommerce?schema=public
+      - TYPESENSE_HOST=typesense
+      - TYPESENSE_PORT=8108
+      - TYPESENSE_API_KEY=TYPESENSE
     volumes:
       - /app/node_modules
       - /app/.next
