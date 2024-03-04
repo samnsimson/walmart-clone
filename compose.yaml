@@ -1,0 +1,62 @@
+version: "3"
+services:
+  storefront:
+    container_name: storefront
+    depends_on:
+      pgdb:
+        condition: service_healthy
+        restart: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_URL=postgresql://postgres:W3lcome!@pgdb:5432/ecommerce?schema=public
+    volumes:
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - walmart
+
+  pgdb:
+    container_name: pgdb
+    image: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=W3lcome!
+      - POSTGRES_DB=ecommerce
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - walmart
+
+  # typesense:
+  #   container_name: walmart-typesense
+  #   image: typesense/typesense:0.21.0
+  #   entrypoint: sh -c "/opt/typesense-server --data-dir /data --api-key=TYPESENSE --enable-cors"
+  #   ports:
+  #     - "8108:8108"
+  #   depends_on:
+  #     - pgdb
+  #   volumes:
+  #     - typesense-data:/data
+  #   networks:
+  #     - walmart
+  #   restart: always
+
+volumes:
+  # typesense-data:
+  #   driver: local
+  postgres_data:
+
+networks:
+  walmart:
+    driver: bridge

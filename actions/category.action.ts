@@ -1,5 +1,5 @@
 import { DatabaseClient } from "@/config/databaseClient";
-import { Prisma } from "@prisma/client";
+import { Category, Product } from "@prisma/client";
 
 interface GetCategoryProps {
   where?: { [key: string]: string | number | null };
@@ -8,11 +8,11 @@ interface GetCategoryProps {
   order?: "ASC" | "DESC";
 }
 
-const categoryWithAssociations = Prisma.validator<Prisma.CategoryDefaultArgs>()({
-  include: { subCategories: true, products: true },
-});
-
-type CategoryWithAssociations = Prisma.CategoryGetPayload<typeof categoryWithAssociations>;
+type CategoryWithAssociations = Category &
+  Partial<{
+    subCategories: Array<Category>;
+    products: Array<Product>;
+  }>;
 
 class CategoryAction extends DatabaseClient {
   private categoryConditions = (condition: GetCategoryProps["where"] = {}) => {

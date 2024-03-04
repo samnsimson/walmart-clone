@@ -1,15 +1,31 @@
-FROM node:alpine as builder
+FROM node:18-alpine AS base
+
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY package*.json /
+COPY package.json ./package.json
 RUN npm install
+
+
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY prisma ./prisma
 COPY . .
+RUN npx prisma generate
+RUN npx prisma db push
+RUN npx prisma db seed
 RUN npm run build
 
-FROM node:alpine
+
+FROM base AS runner
 WORKDIR /app
+ENV NODE_ENV production
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
+EXPOSE 3000
+ENV PORT 3000
 
-FROM typesense/typesense:0.22.0
-COPY ./typesense.config.json /app/typesense.config.json
-EXPOSE 8108
-CMD ["typesense", "server", "-c", "/app/typesense.config.json"]
+CMD ["node", "server.js"]
