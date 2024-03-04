@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FC, HTMLAttributes } from "react";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
+import { SearchBar } from "../searchBar";
 
 interface NavigationProps extends HTMLAttributes<HTMLDivElement> {
   [x: string]: any;
@@ -26,7 +27,7 @@ const ListItem: FC<NavigationListItem> = ({ children, href = null, fluid, bgDisa
         "cursor-pointer gap-2 font-semibold text-white duration-200 fade-in-25",
         {
           "flex-1": fluid,
-          "hover:bg-primary-dark p-4": !bgDisabled,
+          "p-4 hover:bg-primary-dark": !bgDisabled,
         },
         className,
       )}
@@ -57,13 +58,7 @@ export const Navigation: FC<NavigationProps> = ({ ...props }) => {
           <LayoutGrid strokeWidth={1} /> Services
         </ListItem>
         <ListItem fluid bgDisabled className="px-4">
-          <div className="flex w-full items-center justify-center rounded-full bg-white pl-4">
-            <Input
-              className="h-10 border-none bg-transparent leading-8 text-black shadow-none focus-visible:shadow-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-              placeholder="Search everything at Walmart online and in store"
-            />
-            <Search strokeWidth={1} size={40} color="#000" className="m-1 rounded-full bg-secondary p-2" />
-          </div>
+          <SearchBar />
         </ListItem>
         <ListItem className="flex">
           <Heart strokeWidth={1} size={16} />

@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { FC, HTMLAttributes } from "react";
+import { FC, HTMLAttributes, ReactNode, isValidElement } from "react";
 
 interface SectionHeadersProps extends HTMLAttributes<HTMLDivElement> {
   sectionTitle?: string | null;
   sectionDescription?: string | null;
-  sectionLink?: string | null;
+  sectionLink?: ReactNode | string | null;
 }
 
 export const SectionHeaders: FC<SectionHeadersProps> = ({ sectionTitle = null, sectionLink = null, sectionDescription = null, className, ...props }) => {
@@ -19,11 +19,13 @@ export const SectionHeaders: FC<SectionHeadersProps> = ({ sectionTitle = null, s
               {sectionDescription && <p className="my-0 text-zinc-500">{sectionDescription}</p>}
             </div>
           )}
-          {sectionLink && (
+          {sectionLink && isValidElement(sectionLink) ? (
+            sectionLink
+          ) : typeof sectionLink === "string" ? (
             <Link href={sectionLink} className="text-sm underline">
               View All
             </Link>
-          )}
+          ) : null}
         </div>
       )}
     </div>
