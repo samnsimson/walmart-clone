@@ -11,7 +11,6 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY prisma ./prisma
-COPY scripts ./scripts
 COPY . .
 RUN npx prisma generate
 RUN npx prisma db push

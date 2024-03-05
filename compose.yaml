@@ -1,65 +1,68 @@
 version: "3"
 services:
-  storefront:
-    container_name: storefront
-    depends_on:
-      pgdb:
-        condition: service_healthy
-        restart: true
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 3000:3000
-    environment:
-      - DATABASE_URL=postgresql://postgres:W3lcome!@pgdb:5432/ecommerce?schema=public
-      - TYPESENSE_HOST=typesense
-      - TYPESENSE_PORT=8108
-      - TYPESENSE_API_KEY=TYPESENSE
-    volumes:
-      - /app/node_modules
-      - /app/.next
-    networks:
-      - walmart
+    storefront:
+        container_name: storefront
+        depends_on:
+            pgdb:
+                condition: service_healthy
+                restart: true
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - 3000:3000
+        environment:
+            - DATABASE_URL=postgresql://postgres:W3lcome!@pgdb:5432/ecommerce?schema=public
+            - TYPESENSE_HOST=typesense
+            - TYPESENSE_PORT=8108
+            - TYPESENSE_API_KEY=99JZY2d6LCclb7MGRcSDpw9z5jXFKWpw
+        volumes:
+            - /app/node_modules
+            - /app/.next
+        networks:
+            - walmart
 
-  pgdb:
-    container_name: pgdb
-    image: postgres
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=W3lcome!
-      - POSTGRES_DB=ecommerce
-    ports:
-      - 5432:5432
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    networks:
-      - walmart
+    pgdb:
+        container_name: pgdb
+        image: postgres
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=W3lcome!
+            - POSTGRES_DB=ecommerce
+        ports:
+            - 5432:5432
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
+        networks:
+            - walmart
 
-  typesense:
-    container_name: typesense
-    image: typesense/typesense:0.26.0.rc59-arm64
-    command: "--data-dir /data --api-key=TYPESENSE --enable-cors"
-    ports:
-      - "8108:8108"
-    depends_on:
-      pgdb:
-        condition: service_healthy
-        restart: true
-    volumes:
-      - typesense_data:/data
-    networks:
-      - walmart
+    typesense:
+        container_name: typesense
+        image: typesense/typesense:0.26.0.rc59
+        command: ["--enable-cors", "true"]
+        environment:
+            - TYPESENSE_API_KEY=99JZY2d6LCclb7MGRcSDpw9z5jXFKWpw
+            - TYPESENSE_DATA_DIR=/data
+        ports:
+            - "8108:8108"
+        depends_on:
+            pgdb:
+                condition: service_healthy
+                restart: true
+        volumes:
+            - typesense_data:/data
+        networks:
+            - walmart
 
 volumes:
-  typesense_data:
-  postgres_data:
+    typesense_data:
+    postgres_data:
 
 networks:
-  walmart:
-    driver: bridge
+    walmart:
+        driver: bridge
