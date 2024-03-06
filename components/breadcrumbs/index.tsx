@@ -14,7 +14,9 @@ const BreadcrumbValue: FC<{ path: string; className?: string }> = ({ path, class
 
 export const Breadcrumbs: FC<BreadcrumbsProps> = ({ ...props }) => {
     const pathname = usePathname();
-    const paths = pathname.split("/").filter((path) => path && !isUUID(path));
+    const pathNameArray = pathname.split("/");
+    const pathIsFinal = (path: string) => isUUID(path) && path === pathNameArray[pathNameArray.length - 1];
+    const paths = pathNameArray.filter((path) => path && !pathIsFinal(path));
     const getLinks = (key: number) => paths.slice(0, key + 1).join("/");
     const notLastItem = (key: number) => key + 1 !== paths.length;
 

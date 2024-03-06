@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 const addToCartButtonVariants = cva("flex items-center justify-center", {
     variants: {
         type: {
-            default: "rounded-full bg-blue-500 text-white font-bold h-auto hover:bg-blue-600 hover:text-white",
+            default: "rounded-full bg-primary text-white font-bold h-auto hover:bg-blue-600 hover:text-white",
             simple: "btn-default",
         },
         display: {
