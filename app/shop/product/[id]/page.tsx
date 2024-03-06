@@ -15,18 +15,22 @@ import { NextPage } from "next";
 import { FC } from "react";
 import Link from "next/link";
 import { capitalize } from "lodash";
+import AddToCartButton from "@/components/addToCartButton";
 
 const ProductPrice: FC<{ retail: Product["retailPrice"]; sale: Product["salePrice"] }> = ({ retail, sale }) => {
     return (
         <div className="my-2">
             <div className="space-x-3">
-                <span className="text-3xl font-bold">Now ${sale}</span> <span className="text-base text-gray-500 line-through">${retail}</span>
+                <span className="text-3xl font-bold text-success">Now ${sale}</span> <span className="text-base text-gray-500 line-through">${retail}</span>
             </div>
             {retail !== sale && (
                 <div className="flex items-center space-x-2 font-bold text-green-700">
                     <Badge className="rounded bg-green-100 font-bold">You save</Badge> <span>${retail - sale}</span>
                 </div>
             )}
+            <span>
+                <small className="text-black">Price when purchased online</small>
+            </span>
         </div>
     );
 };
@@ -230,6 +234,7 @@ const SingleProductPage: NextPage<NextPageProps> = async ({ params: { id }, sear
                         <ProductMeta product={product} />
                         <ProductPrice retail={product.retailPrice} sale={product.salePrice} />
                         <OtherInterestLink />
+                        <AddToCartButton productId={product.id} buttonText="Add to cart" />
                         <DeliveryInformation />
                     </CardContent>
                     <CardFooter className="flex justify-around">
