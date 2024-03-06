@@ -35,12 +35,12 @@ const ProductPrice: FC<{ retail: Product["retailPrice"]; sale: Product["salePric
     );
 };
 
-const OtherInterestLink: FC = () => {
+const OtherInterestLink: FC<{ productId: string }> = ({ productId: id }) => {
     return (
         <div className="py-4">
             <div className="prose min-w-full rounded bg-[#F2F8FD] p-4">
                 <p className="m-0">
-                    Interested in other options? <Link href="#">view related products</Link>
+                    Interested in other options? <Link href={`/shop/product/related/${id}`}>view related products</Link>
                 </p>
             </div>
         </div>
@@ -233,7 +233,7 @@ const SingleProductPage: NextPage<NextPageProps> = async ({ params: { id }, sear
                         <ProductMetaHeader />
                         <ProductMeta product={product} />
                         <ProductPrice retail={product.retailPrice} sale={product.salePrice} />
-                        <OtherInterestLink />
+                        <OtherInterestLink productId={product.id} />
                         <AddToCartButton productId={product.id} buttonText="Add to cart" />
                         <DeliveryInformation />
                     </CardContent>

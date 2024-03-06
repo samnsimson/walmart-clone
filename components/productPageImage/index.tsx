@@ -5,6 +5,7 @@ import { AspectRatio } from "../ui/aspect-ratio";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { HeartIcon, ZoomIn } from "lucide-react";
+import { FavouritesButton } from "../favouritesButton";
 
 interface ProductPageImageProps extends HTMLAttributes<HTMLDivElement> {
     product: Product;
@@ -30,8 +31,8 @@ export const ProductPageImage: FC<ProductPageImageProps> = ({ product, ...props 
                 <Image src={mainImage} alt="product image" width={640} height={640} className="h-full rounded-xl" />
             </div>
             <div className="col-span-1 space-y-6">
-                <Button className="btn-default flex h-10 w-10 items-center justify-center rounded-full p-0">
-                    <HeartIcon size={20} />
+                <Button className="btn-default relative flex h-10 w-10 items-center justify-center rounded-full p-0">
+                    <FavouritesButton productId={product.id} className="left-1 top-1 text-black" />
                 </Button>
                 <Button className="btn-default flex h-10 w-10 items-center justify-center rounded-full p-0">
                     <ZoomIn size={20} />
