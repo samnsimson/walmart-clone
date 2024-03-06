@@ -1,16 +1,16 @@
 {
-  "typesense": {
-    "api_key": "TYPESENSE",
-    "nodes": [
-      {
-        "host": "localhost",
+    "typesense": {
+        "api_key": "TYPESENSE",
+        "nodes": [
+            {
+                "host": "localhost",
+                "port": 8108,
+                "protocol": "http"
+            }
+        ]
+    },
+    "server": {
         "port": 8108,
-        "protocol": "http"
-      }
-    ]
-  },
-  "server": {
-    "port": 8108,
-    "listen_address": "localhost"
-  }
+        "listen_address": "localhost"
+    }
 }

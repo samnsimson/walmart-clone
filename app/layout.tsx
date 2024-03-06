@@ -8,20 +8,20 @@ import "./globals.css";
 const openSans = Open_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Walmart | Save money. Live better",
-  description: "Save Money. Live Better",
+    title: "Walmart | Save money. Live better",
+    description: "Save Money. Live Better",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <html lang="en">
-      <body className={openSans.className} suppressHydrationWarning={true}>
-        <QueryProvider>
-          <Header />
-          {children}
-          <Fotoer />
-        </QueryProvider>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <body className={openSans.className} suppressHydrationWarning={true}>
+                <QueryProvider>
+                    <Header />
+                    {children}
+                    <Fotoer />
+                </QueryProvider>
+            </body>
+        </html>
+    );
 }
