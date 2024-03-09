@@ -62,6 +62,10 @@ class ProductAction extends DatabaseClient {
         return await this.db.product.findFirst({ where: { id }, ...this.productAssociations(include) });
     };
 
+    public getMultipleProducts = async ({ ids }: { ids: Array<string> }) => {
+        return await this.db.product.findMany({ where: { id: { in: ids } } });
+    };
+
     public getAllProducts = async ({ where, include, limit = 24 }: ProductFilters = {}): Promise<ProductWithAssociations[]> => {
         return await this.db.product.findMany({ where: this.productFilters(where), ...(limit !== -1 && { take: limit }) });
     };

@@ -16,6 +16,7 @@ import { FC } from "react";
 import Link from "next/link";
 import { capitalize } from "lodash";
 import AddToCartButton from "@/components/addToCartButton";
+import { AddToListButton } from "@/components/addToListButton";
 
 const ProductPrice: FC<{ retail: Product["retailPrice"]; sale: Product["salePrice"] }> = ({ retail, sale }) => {
     return (
@@ -238,10 +239,7 @@ const SingleProductPage: NextPage<NextPageProps> = async ({ params: { id }, sear
                         <DeliveryInformation />
                     </CardContent>
                     <CardFooter className="flex justify-around">
-                        <Button variant="link">
-                            <HeartIcon size={16} className="mx-2" />
-                            Add to list
-                        </Button>
+                        <AddToListButton productId={product.id} />
                         <Separator className="h-6" orientation="vertical" />
                         <Button variant="link">
                             <HeartIcon size={16} className="mx-2" />

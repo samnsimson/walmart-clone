@@ -5,7 +5,7 @@ declare global {
 }
 
 export class DatabaseClient {
-    protected db: PrismaClient;
+    public db: PrismaClient;
 
     constructor() {
         this.db = this.connection();

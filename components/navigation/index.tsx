@@ -62,10 +62,10 @@ export const Navigation: FC<NavigationProps> = ({ ...props }) => {
                 </ListItem>
                 <ListItem className="flex">
                     <Heart strokeWidth={1} size={16} />
-                    <div className="leading-2">
+                    <Link href="/shop/favourites" className="leading-2">
                         <div className="text-xs font-normal leading-[12px]">Reorder</div>
                         <div className="leading-tight">My Items</div>
-                    </div>
+                    </Link>
                 </ListItem>
                 <ListItem className="flex">
                     <User strokeWidth={1} size={16} />

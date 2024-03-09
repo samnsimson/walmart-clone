@@ -48,24 +48,30 @@ const AddToCartButton: FC<AddToCartButtonProps> = ({ productId: id, buttonText, 
     }
 
     return (
-        <div className={cn(addToCartButtonVariants({ type, display, size }))}>
+        <div className={cn(addToCartButtonVariants({ type, display, size }), { "px-2": size === "sm" })}>
             <div className="flex w-full items-center justify-between">
                 <Button
                     variant="outline"
                     size="icon"
-                    className="ring-none h-8 w-8 rounded-full border-none bg-blue-400 p-0 text-white outline-none hover:bg-blue-700 hover:text-white"
+                    className={cn(
+                        "ring-none rounded-full border-none bg-blue-400 p-0 text-white outline-none hover:bg-blue-700 hover:text-white",
+                        size === "sm" ? "h-6 w-6" : "h-8 w-8",
+                    )}
                     onClick={() => removeFromCart(id)}
                 >
-                    <MinusIcon size={24} strokeWidth={1} />
+                    <MinusIcon size={size === "sm" ? 16 : 24} strokeWidth={1} />
                 </Button>
-                <div className="font-bold leading-8">{item.quantity}</div>
+                <div className={cn("min-w-14 text-center font-bold", size === "sm" ? "leading-4" : "leading-8")}>{item.quantity}</div>
                 <Button
                     variant="default"
                     size="icon"
-                    className="ring-none h-8 w-8 rounded-full border-none bg-blue-400 p-0 text-white outline-none hover:bg-blue-700 hover:text-white"
+                    className={cn(
+                        "ring-none rounded-full border-none bg-blue-400 p-0 text-white outline-none hover:bg-blue-700 hover:text-white",
+                        size === "sm" ? "h-6 w-6" : "h-8 w-8",
+                    )}
                     onClick={() => addToCart({ id, quantity: 1 })}
                 >
-                    <PlusIcon size={24} strokeWidth={1} />
+                    <PlusIcon size={size === "sm" ? 16 : 24} strokeWidth={1} />
                 </Button>
             </div>
         </div>
