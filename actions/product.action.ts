@@ -1,6 +1,8 @@
 import { DatabaseClient } from "@/config/databaseClient";
 import { Brand, Cart, Category, Prisma, Product, Rating, Review } from "@prisma/client";
 import categoryAction from "./category.action";
+import { paginate } from "@/lib/utils";
+import { PaginatedRecord } from "@/lib/types";
 
 interface WhereCond {
     [x: string]: any;
@@ -31,6 +33,12 @@ export type ProductWithAssociations = Product &
         brand: Brand;
     }>;
 
+interface ProductUsingCategoryIdParam {
+    id: string;
+    limit?: number;
+    skip?: number;
+}
+
 class ProductAction extends DatabaseClient {
     private readonly allowedFilters: Array<string> = ["id", "sku", "category"];
 
@@ -58,12 +66,12 @@ class ProductAction extends DatabaseClient {
         return await this.db.product.findMany({ where: this.productFilters(where), ...(limit !== -1 && { take: limit }) });
     };
 
-    public getAllProductsUsingCategoryId = async (id: string): Promise<Array<Product>> => {
-        const categoryWithProduct = await categoryAction.getSingleCategory({ where: { id }, include: ["products"] });
-        if (categoryWithProduct?.products?.length) return categoryWithProduct.products;
-        const subCategoriesWithProduct = await categoryAction.getCategories({ where: { parentId: id }, include: ["products"] });
+    public getAllProductsUsingCategoryId = async ({ id, limit = 24, skip = 0 }: ProductUsingCategoryIdParam): Promise<PaginatedRecord<Product>> => {
+        const categoryWithProduct = await categoryAction.getSingleCategory({ where: { id }, include: ["products"], limit, skip });
+        if (categoryWithProduct?.products?.length) return paginate(categoryWithProduct.products);
+        const subCategoriesWithProduct = await categoryAction.getCategories({ where: { parentId: id }, include: ["products"], limit: -1 });
         const productsArr = subCategoriesWithProduct.flatMap((subcategory) => subcategory.products);
-        return productsArr as Array<Product>;
+        return paginate(productsArr, limit, skip) as PaginatedRecord<Product>;
     };
 
     public transformProductListForCarousel(products: Product[] = []) {

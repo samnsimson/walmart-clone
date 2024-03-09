@@ -43,7 +43,7 @@ export const ProductCard: FC<ProductCardProps> = ({ productId, title, image, pri
                         {sale && <span className="font-bold text-success">Now ${sale}</span>}{" "}
                         {retail && <span className="text-base text-zinc-500 line-through">${retail}</span>}
                     </h3>
-                    <p className="m-0 line-clamp-2 leading-snug">{title}</p>
+                    <p className="m-0 line-clamp-2 leading-snug hover:underline">{title}</p>
                 </CardContent>
             </Link>
             <CardFooter className="block p-0">

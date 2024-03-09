@@ -6,6 +6,7 @@ interface GetCategoryProps {
     include?: Array<"subCategories" | "products">;
     limit?: number;
     order?: "ASC" | "DESC";
+    skip?: number;
 }
 
 type CategoryWithAssociations = Category &
@@ -22,19 +23,24 @@ class CategoryAction extends DatabaseClient {
         }, {});
     };
 
-    private categoryAssociations = (include: GetCategoryProps["include"] = []) => {
+    private categoryAssociations = (include: GetCategoryProps["include"] = [], limit = 24, skip = 0) => {
         return include.reduce((accumulator: { [x: string]: any }, current) => {
-            accumulator["include"] = { ...accumulator.include, [current]: true };
+            accumulator["include"] = {
+                ...accumulator.include,
+                [current]: {
+                    ...(limit !== -1 && { take: limit, skip: limit * skip }),
+                },
+            };
             return accumulator;
         }, {});
     };
 
-    public getCategories = async ({ include, where, limit = 24 }: GetCategoryProps = {}): Promise<Partial<CategoryWithAssociations>[]> => {
+    public getCategories = async ({ include, where, limit = 24, skip = 0 }: GetCategoryProps = {}): Promise<Partial<CategoryWithAssociations>[]> => {
         try {
             return await this.db.category.findMany({
                 ...this.categoryConditions(where),
                 ...this.categoryAssociations(include),
-                ...(limit !== -1 && { take: limit }),
+                ...(limit !== -1 && { take: limit, skip: limit * skip }),
             });
         } catch (error) {
             console.log(error);
@@ -42,9 +48,13 @@ class CategoryAction extends DatabaseClient {
         }
     };
 
-    public getSingleCategory = async ({ include, where }: GetCategoryProps = {}): Promise<Partial<CategoryWithAssociations> | null> => {
+    public getSingleCategory = async ({ include, where, limit = 24, skip = 0 }: GetCategoryProps = {}): Promise<Partial<CategoryWithAssociations> | null> => {
         try {
-            return await this.db.category.findFirst({ ...this.categoryConditions(where), ...this.categoryAssociations(include) });
+            return await this.db.category.findFirst({
+                ...this.categoryConditions(where),
+                ...this.categoryAssociations(include),
+                ...(limit !== -1 && { take: limit, ...(skip && { skip: limit * skip }) }),
+            });
         } catch (error) {
             console.log(error);
             throw new Error(error as any);

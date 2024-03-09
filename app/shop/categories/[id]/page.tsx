@@ -18,11 +18,11 @@ export async function generateStaticParams() {
 }
 
 const SingleCategoryPage: NextPage<NextPageProps> = async ({ params: { id } }) => {
-    const products = await productService.getAllProductsUsingCategoryId(id);
+    const { data } = await productService.getAllProductsUsingCategoryId({ id });
     return (
         <div>
-            <SectionTitle title="Shop the look" />
-            <ProductCarousel products={products} />
+            <SectionTitle title="Shop the look" description="Search through all the designs" link={`/shop/categories/products/${id}`} />
+            <ProductCarousel products={data} />
             <Separator className="my-6" />
             <div className="grid grid-cols-4 gap-6">
                 <CatgegorySideBar className="col-span-1" title="Categories" />
@@ -38,7 +38,7 @@ const SingleCategoryPage: NextPage<NextPageProps> = async ({ params: { id } }) =
                                 height={691}
                             />
                             <SectionTitle title="Perk up your bedroom" description="A few new pieces will have you primed to seize the day." size="sm" />
-                            <ProductCarousel products={products} columns={4} />
+                            <ProductCarousel products={data} columns={4} />
                         </CardContent>
                     </Card>
                     <Card>

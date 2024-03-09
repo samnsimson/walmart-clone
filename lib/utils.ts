@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { PaginatedRecord } from "./types";
 
 declare global {
     interface URLSearchParams {
@@ -23,3 +24,10 @@ export const isUUID = (str: string) => {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     return uuidRegex.test(str);
 };
+
+export const paginate = <T>(items: Array<T> = [], limit: number = 24, page: number = 1): PaginatedRecord<T> => ({
+    current: limit,
+    total: items.length,
+    page,
+    data: items.splice((page - 1) * limit, limit),
+});

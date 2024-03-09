@@ -11,3 +11,10 @@ export interface Cart {
 export interface Favourites {
     id: string;
 }
+
+export interface PaginatedRecord<T> {
+    current: number;
+    total: number;
+    page: number;
+    data: Array<T>;
+}
