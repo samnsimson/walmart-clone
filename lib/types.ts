@@ -18,3 +18,13 @@ export interface PaginatedRecord<T> {
     page: number;
     data: Array<T>;
 }
+
+export interface RatingsData {
+    total: number;
+    highestCount: number;
+    highestRating: number;
+    average: number;
+    stats: {
+        [x: number]: { count: number; percentage: number };
+    };
+}

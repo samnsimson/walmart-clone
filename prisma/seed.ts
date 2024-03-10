@@ -53,7 +53,11 @@ const generateUsers = (count: number) => {
 };
 
 const generateReviews = (count: number) => {
-    return [...Array(count)].map(() => ({ review: faker.lorem.paragraph({ min: 3, max: 5 }) }));
+    return [...Array(count)].map(() => ({
+        title: faker.lorem.sentence({ min: 4, max: 8 }),
+        review: faker.lorem.paragraph({ min: 3, max: 5 }),
+        rating: Math.floor(Math.random() * 5) + 1,
+    }));
 };
 
 const setupRelatedProducts = async () => {

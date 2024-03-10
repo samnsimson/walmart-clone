@@ -1,30 +1,61 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { fetchMultipleProducts } from "@/lib/hooks";
 import useStore from "@/lib/store";
 import { Brand, Product } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import { FC, HTMLAttributes, useEffect, useState } from "react";
+import { FC, HTMLAttributes, useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { AspectRatio } from "../ui/aspect-ratio";
 import AddToCartButton from "../addToCartButton";
 import { StarRating } from "../starRating";
 import { Button } from "../ui/button";
-import { FavouritesButton } from "../favouritesButton";
 import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
 
 interface FavouriteProductsListProps extends HTMLAttributes<HTMLDivElement> {
     [x: string]: any;
 }
 
 export const FavouriteProductsList: FC<FavouriteProductsListProps> = ({ ...props }) => {
+    const [isLoading, setIsLoading] = useState(true);
     const [products, setProducts] = useState<Array<Product & { brand: Brand }>>([]);
     const { favourites, removeFromFavourites } = useStore((state) => state);
     const mutation = useMutation({ mutationFn: fetchMultipleProducts });
 
-    useEffect(() => {
-        mutation.mutate(favourites, { onSuccess: ({ data }) => setProducts(data) });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    useLayoutEffect(() => {
+        mutation.mutate(favourites, {
+            onSuccess: ({ data }) => setProducts(data),
+            onSettled: () => setIsLoading(false),
+        });
     }, [favourites]);
+
+    if (isLoading) {
+        return (
+            <ul>
+                {[...Array(8)].map((_, key) => (
+                    <li key={key} className="flex items-center justify-between space-x-4 p-3">
+                        <div className="flex flex-1 space-x-6">
+                            <Skeleton className="h-20 min-w-20 bg-stone-100" />
+                            <div className="prose flex flex-1 flex-col space-y-2">
+                                <Skeleton className="h-6 w-[70%] bg-stone-100" />
+                                <Skeleton className="h-5 min-w-full bg-stone-100" />
+                                <Skeleton className="h-5 min-w-full bg-stone-100" />
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center justify-center space-y-2">
+                            <Skeleton className="h-6 w-48 bg-stone-100" />
+                            <Skeleton className="h-6 w-48 bg-stone-100" />
+                        </div>
+                        <div className="flex space-x-6">
+                            <Skeleton className="h-12 w-40 rounded-full bg-stone-100" />
+                            <Skeleton className="h-12 w-28 rounded-full bg-stone-100" />
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        );
+    }
 
     return (
         <div {...props}>

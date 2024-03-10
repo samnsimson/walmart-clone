@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { PaginatedRecord } from "./types";
+import { PaginatedRecord, RatingsData } from "./types";
 
 declare global {
     interface URLSearchParams {
@@ -31,3 +31,21 @@ export const paginate = <T>(items: Array<T> = [], limit: number = 24, page: numb
     page,
     data: items.splice((page - 1) * limit, limit),
 });
+
+export const calculateRating = (rating: Array<number>): RatingsData => {
+    const ratings: any = {};
+    const stats: Record<string, any> = {};
+    const totalCount = rating.length;
+    [1, 2, 3, 4, 5].forEach((r) => (stats[r] = rating.filter((x) => x === r).reduce((a, b) => a + b, 0)));
+    const highestCount = Math.max(...Object.values(stats));
+    const averageRating = (Object.entries(stats).reduce((sum, [rating, count]) => sum + parseInt(rating) * count, 0) / totalCount / 5) * 5;
+    const statsWithPercentage = Object.fromEntries(
+        Object.entries(stats).map(([key, count]: any) => [key, { count, percentage: Math.round((count / highestCount) * 100) }]),
+    );
+    ratings["total"] = totalCount;
+    ratings["highestCount"] = highestCount;
+    ratings["highestRating"] = 5;
+    ratings["average"] = parseFloat(averageRating.toFixed(2));
+    ratings["stats"] = statsWithPercentage;
+    return ratings as RatingsData;
+};

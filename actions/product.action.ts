@@ -1,5 +1,5 @@
 import { DatabaseClient } from "@/config/databaseClient";
-import { Brand, Cart, Category, Prisma, Product, Rating, Review } from "@prisma/client";
+import { Brand, Cart, Category, Prisma, Product, Review } from "@prisma/client";
 import categoryAction from "./category.action";
 import { paginate } from "@/lib/utils";
 import { PaginatedRecord } from "@/lib/types";
@@ -8,7 +8,7 @@ interface WhereCond {
     [x: string]: any;
 }
 
-type ProductAssociations = "relatedProducts" | "relatedToProducts" | "categories" | "review" | "rating" | "brand";
+type ProductAssociations = "relatedProducts" | "relatedToProducts" | "categories" | "review" | "brand";
 
 interface ProductFilters {
     where?: WhereCond;
@@ -27,7 +27,6 @@ export type ProductWithAssociations = Product &
         relatedProducts: Array<Product>;
         relatedToProducts: Array<Product>;
         review: Array<Review>;
-        rating: Array<Rating>;
         categories: Array<Category>;
         carts: Array<Cart>;
         brand: Brand;

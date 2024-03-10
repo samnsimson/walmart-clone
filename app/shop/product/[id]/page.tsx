@@ -17,6 +17,7 @@ import Link from "next/link";
 import { capitalize } from "lodash";
 import AddToCartButton from "@/components/addToCartButton";
 import { AddToListButton } from "@/components/addToListButton";
+import { ProductReviews } from "@/components/productReviews";
 
 const ProductPrice: FC<{ retail: Product["retailPrice"]; sale: Product["salePrice"] }> = ({ retail, sale }) => {
     return (
@@ -206,7 +207,7 @@ export async function generateStaticParams() {
 }
 
 const SingleProductPage: NextPage<NextPageProps> = async ({ params: { id }, searchParams }) => {
-    const product = await productAction.getSingleProduct({ id, include: ["relatedProducts", "relatedToProducts", "rating", "review", "brand"] });
+    const product = await productAction.getSingleProduct({ id, include: ["relatedProducts", "relatedToProducts", "review", "brand"] });
 
     if (!product) return <></>;
 
@@ -227,9 +228,11 @@ const SingleProductPage: NextPage<NextPageProps> = async ({ params: { id }, sear
                         </>
                     )}
                 </div>
+                <SectionHeaders sectionTitle="Customer reviews and ratings" />
+                <ProductReviews reviews={product.review ?? []} />
             </div>
             <div className="col-span-2">
-                <Card>
+                <Card className="sticky top-0">
                     <CardContent className="prose flex min-w-full flex-col space-y-3 px-4 py-6">
                         <ProductMetaHeader />
                         <ProductMeta product={product} />
