@@ -12,12 +12,10 @@ interface ProductReviewsProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const ProductReviews: FC<ProductReviewsProps> = async ({ reviews, ...props }) => {
-    console.log("🚀 ~ constProductReviews:FC<ProductReviewsProps>= ~ reviews:", reviews);
     const ratings = useMemo(() => calculateRating(reviews.map((x) => x.rating || 0)), [reviews]);
-    console.log("🚀 ~ constProductReviews:FC<ProductReviewsProps>= ~ ratings:", ratings);
     return (
-        <div className="flex flex-col space-y-6">
-            <div {...props} className="grid grid-cols-2">
+        <div className="flex flex-col space-y-6" {...props}>
+            <div className="grid grid-cols-2">
                 <div className="col-span-1 mb-2 flex flex-col space-y-4">
                     <div className="prose-2xl flex flex-col">
                         <h3 className="font-bold ">

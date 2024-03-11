@@ -6,7 +6,7 @@ import * as _ from "lodash";
 
 const prisma = new PrismaClient();
 
-const sku = customAlphabet("1234567890abcdef", 8);
+const sku = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", 8);
 const random = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 const getRandomObject = (array: any[]) => array[Math.floor(Math.random() * array.length)];
 
@@ -70,6 +70,7 @@ const setupRelatedProducts = async () => {
         promises.push(record);
     }
     await Promise.all(promises);
+    await prisma.$disconnect();
 };
 
 const setupReviews = async () => {
@@ -84,12 +85,14 @@ const setupReviews = async () => {
         promises.push(record);
     }
     await Promise.all(promises);
+    await prisma.$disconnect();
 };
 
 const setupUsers = async () => {
     console.log("Seeding users...");
     const users = generateUsers(20);
     await prisma.user.createMany({ data: users });
+    await prisma.$disconnect();
 };
 
 const setupCategoriesAndProducts = async () => {
@@ -109,6 +112,7 @@ const setupCategoriesAndProducts = async () => {
             });
         }),
     );
+    await prisma.$disconnect();
 };
 
 const setupBrand = async () => {
@@ -125,6 +129,7 @@ const setupBrand = async () => {
         });
     });
     await Promise.all(promises);
+    await prisma.$disconnect();
 };
 
 const main = async () => {
