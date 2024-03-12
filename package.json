@@ -10,7 +10,7 @@
         "lint": "next lint",
         "prepare": "husky",
         "format": "prettier --write **/*.{ts,tsx,js,jsx}",
-        "create-typesense-collections": "node ./scripts/create-typesense-collection.js"
+        "postinstall": "npx prisma generate"
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"
