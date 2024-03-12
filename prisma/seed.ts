@@ -1,10 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import { customAlphabet, nanoid } from "nanoid";
 import { faker } from "@faker-js/faker";
 import { randCompanyName, randProduct, randProductCategory, randProductDescription, randUser } from "@ngneat/falso";
+import { DatabaseClient } from "@/config/databaseClient";
 import * as _ from "lodash";
 
-const prisma = new PrismaClient();
+const { db: prisma } = new DatabaseClient();
 
 const sku = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", 8);
 const random = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -63,56 +63,60 @@ const generateReviews = (count: number) => {
 const setupRelatedProducts = async () => {
     console.log("Seeding related products...");
     const products = await prisma.product.findMany({ select: { id: true } });
-    const promises = [];
-    for (const { id } of products) {
-        const rp = _.sampleSize(products, 12);
-        const record = prisma.product.update({ where: { id }, data: { relatedProducts: { connect: rp.map(({ id }) => ({ id })) } } });
-        promises.push(record);
+    const batchProducts = _.chunk(products);
+    for (const batch of batchProducts) {
+        const promises = [];
+        for (const { id } of batch) {
+            const rp = _.sampleSize(products, 12);
+            const record = prisma.product.update({ where: { id }, data: { relatedProducts: { connect: rp.map(({ id }) => ({ id })) } } });
+            promises.push(record);
+        }
+        await Promise.all(promises);
     }
-    await Promise.all(promises);
-    await prisma.$disconnect();
 };
 
 const setupReviews = async () => {
     console.log("Seeding reviews...");
     const products = await prisma.product.findMany({ select: { id: true } });
     const users = await prisma.user.findMany({ select: { id: true } });
-    const promises = [];
-    for (const product of products) {
-        const reviews = generateReviews(random(3, 7));
-        const reviewWithRelation = reviews.map((review) => ({ ...review, productId: product.id, userId: getRandomObject(users).id }));
-        const record = prisma.review.createMany({ data: reviewWithRelation });
-        promises.push(record);
+    const batchProducts = _.chunk(products, 15);
+    for (const batch of batchProducts) {
+        const promises = [];
+        for (const product of batch) {
+            const reviews = generateReviews(random(3, 7));
+            const reviewWithRelation = reviews.map((review) => ({ ...review, productId: product.id, userId: getRandomObject(users).id }));
+            const record = prisma.review.createMany({ data: reviewWithRelation });
+            promises.push(record);
+        }
+        await Promise.all(promises);
     }
-    await Promise.all(promises);
-    await prisma.$disconnect();
 };
 
 const setupUsers = async () => {
     console.log("Seeding users...");
     const users = generateUsers(20);
     await prisma.user.createMany({ data: users });
-    await prisma.$disconnect();
 };
 
 const setupCategoriesAndProducts = async () => {
     console.log("Seeding categories and products...");
-    await Promise.all(
-        generateCategories(25).map((category) => {
-            return prisma.category.create({
-                data: {
-                    ...category,
-                    subCategories: {
-                        create: generateCategories(10).map((subcat) => {
-                            return { ...subcat, products: { create: generateProducts(10) } };
-                        }),
-                    },
-                },
-                include: { subCategories: true, products: true },
+    const categories = generateCategories(25);
+    const batchCategories = _.chunk(categories, 15);
+    for (const batch of batchCategories) {
+        const promises = [];
+        for (const category of batch) {
+            const subCategories = generateCategories(10).map((subcat) => ({
+                ...subcat,
+                products: { create: generateProducts(10) },
+            }));
+            const record = prisma.category.create({
+                data: { ...category, subCategories: { create: subCategories } },
+                include: { subCategories: { include: { products: true } } },
             });
-        }),
-    );
-    await prisma.$disconnect();
+            promises.push(record);
+        }
+        await Promise.all(promises);
+    }
 };
 
 const setupBrand = async () => {
@@ -121,15 +125,17 @@ const setupBrand = async () => {
     await prisma.brand.createMany({ data: brands });
     const createdBrands = await prisma.brand.findMany({ select: { id: true } });
     const products = await prisma.product.findMany({ select: { id: true } });
-    const promises = products.map((product) => {
-        const { id: brandId } = _.sample(createdBrands) ?? { id: "" };
-        return prisma.product.update({
-            where: { id: product.id },
-            data: { brand: { connect: { id: brandId } } },
+    const batchProducts = _.chunk(products, 15);
+    for (const batch of batchProducts) {
+        const promises = batch.map((product) => {
+            const { id: brandId } = _.sample(createdBrands) ?? { id: "" };
+            return prisma.product.update({
+                where: { id: product.id },
+                data: { brand: { connect: { id: brandId } } },
+            });
         });
-    });
-    await Promise.all(promises);
-    await prisma.$disconnect();
+        await Promise.all(promises);
+    }
 };
 
 const main = async () => {
