@@ -18,6 +18,7 @@ import { capitalize } from "lodash";
 import AddToCartButton from "@/components/addToCartButton";
 import { AddToListButton } from "@/components/addToListButton";
 import { ProductReviews } from "@/components/productReviews";
+import { DeliveryInformation } from "@/components/deliveryInformation";
 
 const ProductPrice: FC<{ retail: Product["retailPrice"]; sale: Product["salePrice"] }> = ({ retail, sale }) => {
     return (
@@ -44,58 +45,6 @@ const OtherInterestLink: FC<{ productId: string }> = ({ productId: id }) => {
                 <p className="m-0">
                     Interested in other options? <Link href={`/shop/product/related/${id}`}>view related products</Link>
                 </p>
-            </div>
-        </div>
-    );
-};
-
-const DeliveryInformation: FC = () => {
-    return (
-        <div className="border-y-1 pb-6 pt-4">
-            <h3 className="my-0">How you&apos;ll get this item:</h3>
-            <div className="mt-6 grid grid-cols-3 gap-6">
-                <div className="flex items-center justify-center rounded-lg border-[3px] border-gray-300 p-4">
-                    <div className="flex flex-col items-center">
-                        <Avatar className="relative h-8 w-8">
-                            <AvatarImage
-                                className="m-0"
-                                src="https://i5.walmartimages.com/dfwrs/76316474-f13c/k2-_d4e8ebb4-9d70-46b4-8f2b-ecc4ac774e07.v1.png"
-                            />
-                        </Avatar>
-                        <p className="m-0">Shipping</p>
-                        <p className="m-0">
-                            <small>Out of stock</small>
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-center justify-center rounded-lg border-[3px] border-gray-300 p-4">
-                    <div className="flex flex-col items-center">
-                        <Avatar className="relative h-8 w-8">
-                            <AvatarImage
-                                className="m-0"
-                                src="https://i5.walmartimages.com/dfwrs/76316474-8720/k2-_d747b89f-5900-404d-a101-1a3452480882.v1.png"
-                            />
-                        </Avatar>
-                        <p className="m-0">Pickup</p>
-                        <p className="m-0">
-                            <small>Out of stock</small>
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-center justify-center rounded-lg border-[3px] border-gray-300 p-4">
-                    <div className="flex flex-col items-center">
-                        <Avatar className="relative h-8 w-8">
-                            <AvatarImage
-                                className="m-0"
-                                src="https://i5.walmartimages.com/dfwrs/76316474-39c2/k2-_8deea800-0d44-4984-b1ce-5a3f12b192b7.v1.png"
-                            />
-                        </Avatar>
-                        <p className="m-0">Delivery</p>
-                        <p className="m-0">
-                            <small>Out of stock</small>
-                        </p>
-                    </div>
-                </div>
             </div>
         </div>
     );
@@ -239,7 +188,7 @@ const SingleProductPage: NextPage<NextPageProps> = async ({ params: { id }, sear
                         <ProductPrice retail={product.retailPrice} sale={product.salePrice} />
                         <OtherInterestLink productId={product.id} />
                         <AddToCartButton productId={product.id} buttonText="Add to cart" />
-                        <DeliveryInformation />
+                        <DeliveryInformation bordered="default" description="How you'll get this item:" />
                     </CardContent>
                     <CardFooter className="flex justify-around">
                         <AddToListButton productId={product.id} />

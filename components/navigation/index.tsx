@@ -75,10 +75,10 @@ export const Navigation: FC<NavigationProps> = ({ ...props }) => {
                     </div>
                 </ListItem>
                 <ListItem className="flex">
-                    <div className="leading-2">
+                    <Link href="/cart" className="leading-2">
                         <ShoppingCart strokeWidth={1} size={20} />
                         <div className="text-xs font-normal leading-[12px]">$0.0</div>
-                    </div>
+                    </Link>
                 </ListItem>
             </ul>
         </div>
