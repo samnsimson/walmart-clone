@@ -1,12 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { fetchMultipleProducts } from "@/lib/hooks";
 import useStore from "@/lib/store";
 import { Brand, Product } from "@prisma/client";
-import { useMutation } from "@tanstack/react-query";
-import { FC, HTMLAttributes, useLayoutEffect, useState } from "react";
+import { FC, HTMLAttributes, useState } from "react";
 import Image from "next/image";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { CheckCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "../ui/button";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import Link from "next/link";
@@ -35,15 +33,21 @@ type CartListHeaderProp = {
 };
 
 const CartListItemFooter: FC<CartListFooterProp> = ({ product }) => {
-    const { removeFromCart, addToFavourites } = useStore((state) => state);
+    const { removeFromCart, addToFavourites, removeFromFavourites, favourites, cart } = useStore((state) => state);
+    const isInFav = favourites.find((x) => x.id === product.id);
+    const cartItem = cart.find((x) => x.id === product.id);
     return (
         <div className="flex items-center justify-end">
             <div className="flex space-x-6">
-                <Button variant="link" className="text-black" onClick={() => removeFromCart(product.id)}>
+                <Button variant="link" className="text-black" onClick={() => removeFromCart(product.id, cartItem ? cartItem.quantity : 1)}>
                     Remove
                 </Button>
-                <Button variant="link" className="text-black" onClick={() => addToFavourites(product.id)}>
-                    Save for later
+                <Button
+                    variant="link"
+                    className="space-x-3 text-black"
+                    onClick={() => (isInFav ? removeFromFavourites(product.id) : addToFavourites(product.id))}
+                >
+                    {isInFav && <CheckCircle className="text-success" size={16} strokeWidth={2} />} <span>Save for later</span>
                 </Button>
                 <AddToCartButton productId={product.id} type="simple" size="sm" />
             </div>

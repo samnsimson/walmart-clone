@@ -6,7 +6,7 @@ import useStore from "@/lib/store";
 import { VariantProps, cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const addToCartButtonVariants = cva("flex items-center justify-center", {
+const addToCartButtonVariants = cva("flex items-center justify-center min-h-10", {
     variants: {
         type: {
             default: "rounded-full bg-primary text-white font-bold h-auto hover:bg-blue-600 hover:text-white",
@@ -18,8 +18,8 @@ const addToCartButtonVariants = cva("flex items-center justify-center", {
             block: "block",
         },
         size: {
-            sm: "py-2 px-4 prose-2xl",
-            xl: "py-3 px-4 prose-3xl",
+            sm: "py-2 px-4 prose-2xl h-10",
+            xl: "py-3 px-4 prose-3xl h-[50px]",
         },
     },
     defaultVariants: {
@@ -42,7 +42,7 @@ const AddToCartButton: FC<AddToCartButtonProps> = ({ productId: id, buttonText, 
         return (
             <Button variant="outline" className={cn(addToCartButtonVariants({ type, display, size }))} size="sm" onClick={() => addToCart({ id, quantity: 1 })}>
                 {type === "simple" && <PlusIcon strokeWidth={1} size={24} />}
-                <p className="m-0 leading-8">{buttonText ?? "Add"}</p>
+                <p className="m-0 leading-6">{buttonText ?? "Add"}</p>
             </Button>
         );
     }

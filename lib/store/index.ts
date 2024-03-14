@@ -18,7 +18,7 @@ const useStore = create(
         persist(
             combine(initialState, (set) => ({
                 addToCart: (item: Cart) => set((state) => ({ cart: addItemToCart(state.cart, item) })),
-                removeFromCart: (id: string) => set((state) => ({ cart: removeItemFromCart(state.cart, id) })),
+                removeFromCart: (id: string, qty?: number) => set((state) => ({ cart: removeItemFromCart(state.cart, id, qty) })),
                 addToFavourites: (id: string) => set((state) => ({ favourites: addItemToFavourites(state.favourites, id) })),
                 removeFromFavourites: (id: string) => set((state) => ({ favourites: removeItemFromFavourites(state.favourites, id) })),
             })),

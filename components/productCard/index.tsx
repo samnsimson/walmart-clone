@@ -47,7 +47,7 @@ export const ProductCard: FC<ProductCardProps> = ({ productId, title, image, pri
                 </CardContent>
             </Link>
             <CardFooter className="block p-0">
-                <AddToCartButton productId={productId} type="simple" />
+                <AddToCartButton productId={productId} type="simple" size="sm" />
             </CardFooter>
         </Card>
     );
