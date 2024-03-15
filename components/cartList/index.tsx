@@ -2,7 +2,7 @@
 "use client";
 import useStore from "@/lib/store";
 import { Brand, Product } from "@prisma/client";
-import { FC, HTMLAttributes, useState } from "react";
+import { FC, HTMLAttributes, useMemo, useState } from "react";
 import Image from "next/image";
 import { CheckCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "../ui/button";
@@ -34,8 +34,8 @@ type CartListHeaderProp = {
 
 const CartListItemFooter: FC<CartListFooterProp> = ({ product }) => {
     const { removeFromCart, addToFavourites, removeFromFavourites, favourites, cart } = useStore((state) => state);
-    const isInFav = favourites.find((x) => x.id === product.id);
-    const cartItem = cart.find((x) => x.id === product.id);
+    const isInFav = useMemo(() => favourites.find((x) => x.id === product.id), [favourites, product]);
+    const cartItem = useMemo(() => cart.find((x) => x.id === product.id), [cart, product]);
     return (
         <div className="flex items-center justify-end">
             <div className="flex space-x-6">
@@ -56,10 +56,11 @@ const CartListItemFooter: FC<CartListFooterProp> = ({ product }) => {
 };
 
 const CartListBody: FC<CartListBodyProp> = ({ product, cart }) => {
-    const calculatePriceWithQuantity = (product: Product, cart: Cart[]) => {
+    const price = useMemo(() => {
         const cartQuantity = cart.find((x) => x.id === product.id)?.quantity || 1;
-        return (product.salePrice * cartQuantity).toFixed(2);
-    };
+        return product.salePrice * cartQuantity;
+    }, [product, cart]);
+
     return (
         <div className="flex items-start space-x-6">
             <div className="min-w-24">
@@ -78,17 +79,21 @@ const CartListBody: FC<CartListBodyProp> = ({ product, cart }) => {
                 </Link>
             </div>
             <div className="min-w-24 text-right">
-                <span className="font-bold">${calculatePriceWithQuantity(product, cart)}</span>
+                <span className="font-bold">${price.toFixed(2)}</span>
             </div>
         </div>
     );
 };
 
 const CartListHeader: FC<CartListHeaderProp> = ({ cart, product }) => {
+    const cartQty = useMemo(() => {
+        const item = cart.find((x) => x.id === product.id);
+        return item ? item.quantity : 0;
+    }, [cart, product]);
     return (
         <div className="flex items-center justify-between">
             <h4 className="font-bold">Arrives tomorrow, {moment().add("1 day").format("MMM, DD")}</h4>
-            <p>{cart.find((x) => x.id === product.id)?.quantity} Item(s)</p>
+            <p>{cartQty} Item(s)</p>
         </div>
     );
 };
