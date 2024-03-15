@@ -3,8 +3,10 @@ import { Open_Sans } from "next/font/google";
 import { Header } from "@/components/header";
 import { Fotoer } from "@/components/footer";
 import QueryProvider from "@/providers/queryProvider";
-import "./globals.css";
 import { cn } from "@/lib/utils";
+import AuthProvider from "@/providers/authProvider";
+import { getServerSession } from "next-auth";
+import "./globals.css";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -13,15 +15,18 @@ export const metadata: Metadata = {
     description: "Save Money. Live Better",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+    const session = await getServerSession();
     return (
         <html lang="en">
             <body className={cn("flex min-h-[100vh] flex-col", openSans.className)} suppressHydrationWarning={true}>
-                <QueryProvider>
-                    <Header />
-                    <main className="flex-1">{children}</main>
-                    <Fotoer />
-                </QueryProvider>
+                <AuthProvider session={session}>
+                    <QueryProvider>
+                        <Header />
+                        <main className="relative flex-grow">{children}</main>
+                        <Fotoer />
+                    </QueryProvider>
+                </AuthProvider>
             </body>
         </html>
     );

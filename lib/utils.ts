@@ -55,3 +55,9 @@ export const qtyMultiplier = (price: number, id: string, cart: Cart[]) => {
     if (!product) return 0;
     return price * product.quantity;
 };
+
+export const selectFields = (fields: Array<string>) => {
+    const select: Record<string, boolean> = {};
+    fields.forEach((field) => (select[field] = true));
+    return select;
+};
