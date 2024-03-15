@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { PaginatedRecord, RatingsData } from "./types";
+import { Cart, PaginatedRecord, RatingsData } from "./types";
 
 declare global {
     interface URLSearchParams {
@@ -48,4 +48,10 @@ export const calculateRating = (rating: Array<number>): RatingsData => {
     ratings["average"] = parseFloat(averageRating.toFixed(2));
     ratings["stats"] = statsWithPercentage;
     return ratings as RatingsData;
+};
+
+export const qtyMultiplier = (price: number, id: string, cart: Cart[]) => {
+    const product = cart.find((x) => x.id === id);
+    if (!product) return 0;
+    return price * product.quantity;
 };

@@ -60,7 +60,7 @@ export const CartContainer: FC<CartContainerProps> = ({ ...props }) => {
             <div className="col-span-2">
                 <Card className="sticky top-0">
                     <CardContent>
-                        <CartDetails />
+                        <CartDetails {...{ cart, products }} />
                     </CardContent>
                 </Card>
             </div>
