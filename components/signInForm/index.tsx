@@ -9,7 +9,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { signIn } from "next-auth/react";
 import { InfoIcon, Loader } from "lucide-react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 
 interface SignInFormProps extends HTMLAttributes<HTMLDivElement> {
@@ -19,6 +19,7 @@ interface SignInFormProps extends HTMLAttributes<HTMLDivElement> {
 type FormFields = z.infer<typeof SignInSchema>;
 
 export const SignInForm: FC<SignInFormProps> = ({ ...props }) => {
+    const router = useRouter();
     const [error, setError] = useState<string | null>(null);
     const form = useForm<FormFields>({
         resolver: zodResolver(SignInSchema),
@@ -30,9 +31,13 @@ export const SignInForm: FC<SignInFormProps> = ({ ...props }) => {
     } = form;
 
     const onSubmit = async ({ email, password }: FormFields) => {
-        const res = await signIn("credentials", { callbackUrl: "http://localhost:3000", redirect: false, email, password });
-        if (res && res.ok) redirect("/");
-        if (res && res.error) setError("Please check your credentials or create an account");
+        try {
+            const res = await signIn("credentials", { redirect: false, email, password });
+            if (res && res.ok) router.push("/");
+            if (res && res.error) setError("Please check your credentials or create an account");
+        } catch (error) {
+            console.log("🚀 ~ onSubmit ~ error:", error);
+        }
     };
 
     return (

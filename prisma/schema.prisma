@@ -15,17 +15,17 @@ datasource db {
 model User {
   id        String    @id @default(uuid())
   firstName String
-  lastName  String
+  lastName  String?
   email     String    @unique
-  phone     BigInt    @unique
-  address   String
-  city      String
-  state     String
-  country   String
-  pincode   BigInt
+  phone     String    @unique
+  address   String?
+  city      String?
+  state     String?
+  country   String?
+  pincode   BigInt?
   password  String
-  token     String
-  isActive  Boolean
+  token     String?
+  isActive  Boolean?
   cart      Cart[]
   billing   Billing[]
   createdAt DateTime  @default(now())

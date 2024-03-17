@@ -4,7 +4,7 @@ import { NextPage } from "next";
 
 const SignUp: NextPage<NextPageProps> = ({}) => {
     return (
-        <div className="prose-base flex flex-col items-center">
+        <div className="prose-base flex flex-col items-center space-y-6">
             <h3 className="my-0 font-bold">Create your account</h3>
             <SignUpForm />
         </div>
